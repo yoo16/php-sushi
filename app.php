@@ -7,7 +7,7 @@ session_start();
 require_once "env.php";
 
 // ライブラリ読み込み
-require 'vendor/autoload.php';
+// require 'vendor/autoload.php';
 
 const TAX_RATE = 0.1; // 消費税率
 
