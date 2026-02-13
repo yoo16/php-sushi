@@ -25,5 +25,5 @@ if (is_array($seats)) {
 
 echo json_encode([
     'status' => 'success',
-    'available_seats' => $available
+    'seats' => $available
 ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
