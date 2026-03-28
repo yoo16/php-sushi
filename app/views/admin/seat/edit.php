@@ -7,23 +7,26 @@
     <?php include VIEW_DIR . 'components/admin_nav.php' ?>
 
     <main class="max-w-xl mx-auto bg-white p-6 rounded shadow">
-        <h1 class="text-2xl text-center font-bold mb-4">座席-編集</h1>
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold">座席編集</h1>
+            <a href="admin/seat/" class="text-sm text-sky-600 hover:underline">← 一覧に戻る</a>
+        </div>
 
-        <form action="admin/seat/update.php" method="POST" enctype="multipart/form-data" class="space-y-4">
-            <input type="hidden" name="id" value="<?= $seat['id'] ?? '' ?>">
+        <form action="admin/seat/update.php" method="POST" class="space-y-5">
+            <input type="hidden" name="id" value="<?= htmlspecialchars($seat['id'] ?? '') ?>">
+
             <div>
-                <label for="name" class="block text-sm font-semibold">カテゴリ名</label>
-                <div class="bg-gray-100 border border-gray-300 rounded px-4 py-2">
-                    <?= $seat['number'] ?>
+                <label class="block text-sm font-medium text-gray-700 mb-1">座席番号</label>
+                <div class="bg-gray-50 border border-gray-200 rounded px-3 py-2 text-gray-700">
+                    <?= htmlspecialchars($seat['number']) ?>
                 </div>
             </div>
 
-            <div class="flex justify-between items-center mt-4">
+            <div class="pt-2">
                 <button type="submit"
-                    class="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700">
-                    更新
+                    class="w-full bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700 font-medium">
+                    更新する
                 </button>
-                <a href="admin/seat/" class="inline border border-sky-600 text-sky-600 px-4 py-2 rounded">戻る</a>
             </div>
         </form>
     </main>

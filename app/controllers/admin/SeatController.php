@@ -11,7 +11,7 @@ class SeatController
     public function __construct() {}
 
     /**
-     * カテゴリ一覧の表示
+     * シート一覧の表示
      */
     public function index()
     {
@@ -23,7 +23,7 @@ class SeatController
         require VIEW_DIR . 'admin/seat/index.php';
     }
 
-        /**
+    /**
      * カテゴリの編集画面表示
      */
     public function edit()
@@ -44,5 +44,4 @@ class SeatController
         // Viewの表示
         require VIEW_DIR . 'admin/seat/edit.php';
     }
-
 }
