@@ -16,7 +16,7 @@ export default function ProductGrid({ baseUrl, disabled, loading, products, onSe
   return (
     <>
       {loading ? <LoadingModal message="商品を読み込んでいます..." /> : null}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-2">
         {products.map((product) => (
           <ProductCard
             key={product.id}

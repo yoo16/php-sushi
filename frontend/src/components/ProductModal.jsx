@@ -79,7 +79,7 @@ export default function ProductModal({ baseUrl, disabled, loading, onClose, onCo
             disabled={disabled || loading}
             onClick={() => onConfirm(quantity)}
           >
-            {loading ? '追加中...' : `${quantity} 皿を注文`}
+            {loading ? '追加中...' : '注文'}
           </button>
         </div>
       </div>
