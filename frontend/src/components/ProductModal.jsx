@@ -29,10 +29,10 @@ export default function ProductModal({ disabled, onClose, onConfirm, product }) 
         </div>
 
         <div className="mt-[18px] grid items-start gap-6 md:grid-cols-[minmax(260px,0.9fr)_minmax(0,1fr)]">
-          <div className="max-h-80 min-h-[220px] overflow-hidden rounded-[26px] bg-gradient-to-b from-sky-50 to-sky-100">
+          <div className="overflow-hidden rounded-[26px]">
             {product.image_path ? (
               <img
-                className="h-full w-full object-cover"
+                className="h-64 w-64 object-contain"
                 src={buildAssetUrl(assetBaseUrl, product.image_path)}
                 alt={product.name}
               />
@@ -43,7 +43,7 @@ export default function ProductModal({ disabled, onClose, onConfirm, product }) 
 
           <div className="flex flex-col gap-3">
             <p className="text-2xl font-semibold text-slate-900">{formatPrice(product.price)}</p>
-            <p className="text-slate-500">数量を選んで注文すると、現在の注文一覧に追加されます。</p>
+            <p className="text-slate-500">数量を選んで、注文してください。</p>
 
             <div className="flex items-center justify-between gap-4 rounded-[20px] bg-sky-50/95 px-[18px] py-4 max-sm:flex-col max-sm:items-stretch">
               <span className="font-medium text-slate-800">数量</span>

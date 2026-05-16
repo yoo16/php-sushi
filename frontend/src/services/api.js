@@ -1,6 +1,13 @@
+import { buildApiUrl } from '../config/runtimeConfig';
+
 async function requestJson(url, options = {}) {
   const response = await fetch(url, options);
+  const contentType = response.headers.get('content-type') ?? '';
   const payload = await response.json().catch(() => ({}));
+
+  if (!contentType.includes('application/json')) {
+    throw new Error(`API did not return JSON: ${String(url)}`);
+  }
 
   if (!response.ok) {
     throw new Error(payload.error ?? payload.message ?? 'API request failed');
@@ -11,21 +18,12 @@ async function requestJson(url, options = {}) {
 
 export const apiClient = {
   get(path, query, options = {}) {
-    const url = new URL(`/api/${path}`, window.location.origin);
-
-    if (query) {
-      Object.entries(query).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
-          url.searchParams.set(key, String(value));
-        }
-      });
-    }
-
+    const url = buildApiUrl(path, query);
     return requestJson(url, options);
   },
 
   post(path, body, options = {}) {
-    return requestJson(`/api/${path}`, {
+    return requestJson(buildApiUrl(path), {
       ...options,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

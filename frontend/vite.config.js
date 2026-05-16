@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
       proxy: {
         '/api': {
-          target: env.VITE_API_PROXY_TARGET || 'http://localhost/react-sushi/backend',
+          target: env.VITE_API_PROXY_TARGET || 'http://localhost:8000',
           changeOrigin: true,
         },
       },

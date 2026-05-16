@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Seat extends Model
+{
+    protected $fillable = [
+        'number',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'number' => 'integer',
+        ];
+    }
+
+    public function visits(): HasMany
+    {
+        return $this->hasMany(Visit::class);
+    }
+}

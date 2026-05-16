@@ -2,6 +2,6 @@ import { apiClient } from './api';
 
 export async function loadProducts(categoryId, options = {}) {
   const query = Number(categoryId) > 0 ? { category_id: String(categoryId) } : undefined;
-  const response = await apiClient.get('product/fetch.php', query, options);
+  const response = await apiClient.get('/product/fetch', query, options);
   return response.products ?? response.data ?? [];
 }
