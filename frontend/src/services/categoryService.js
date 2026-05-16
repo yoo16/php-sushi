@@ -1,9 +1,6 @@
-export function createCategoryService(apiClient) {
-  return {
-    async loadCategories(options = {}) {
-      const response = await apiClient.get('category/fetch.php', undefined, options);
+import { apiClient } from './api';
 
-      return response.categories ?? [];
-    },
-  };
+export async function loadCategories(options = {}) {
+  const response = await apiClient.get('category/fetch.php', undefined, options);
+  return response.categories ?? [];
 }

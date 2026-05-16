@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { findSeatById } from '../domain/seat';
+import { loadSeats } from '../services/seatService';
 import { getInitialSeatId, getInitialSeatNumber, persistSelectedSeat } from '../utils/orderSessionStorage';
 
-export default function useSeatSelection({ config, seatService, setErrorMessage }) {
+export default function useSeatSelection({ config, setErrorMessage }) {
   const [seats, setSeats] = useState([]);
   const [selectedSeatId, setSelectedSeatId] = useState(() => getInitialSeatId(config));
   const [selectedSeatNumber, setSelectedSeatNumber] = useState(() => getInitialSeatNumber(config));
@@ -12,7 +13,7 @@ export default function useSeatSelection({ config, seatService, setErrorMessage 
 
     async function loadSeatOptions() {
       try {
-        const seatData = await seatService.loadSeats(selectedSeatId, selectedSeatNumber, {
+        const seatData = await loadSeats(selectedSeatId, selectedSeatNumber, {
           signal: controller.signal,
         });
 
@@ -32,10 +33,8 @@ export default function useSeatSelection({ config, seatService, setErrorMessage 
 
     loadSeatOptions();
 
-    return () => {
-      controller.abort();
-    };
-  }, [seatService, setErrorMessage]);
+    return () => { controller.abort(); };
+  }, [setErrorMessage]);
 
   function handleSeatChange(nextSeatId) {
     const seat = findSeatById(seats, nextSeatId);

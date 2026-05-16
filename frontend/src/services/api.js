@@ -9,45 +9,27 @@ async function requestJson(url, options = {}) {
   return payload;
 }
 
-export function createApiClient(baseUrl) {
-  return {
-    get(path, query, options = {}) {
-      const url = new URL(buildApiUrl(baseUrl, path), window.location.origin);
+export const apiClient = {
+  get(path, query, options = {}) {
+    const url = new URL(`/api/${path}`, window.location.origin);
 
-      if (query) {
-        Object.entries(query).forEach(([key, value]) => {
-          if (value !== undefined && value !== null && value !== '') {
-            url.searchParams.set(key, String(value));
-          }
-        });
-      }
-
-      return requestJson(url, options);
-    },
-
-    post(path, body, options = {}) {
-      return requestJson(buildApiUrl(baseUrl, path), {
-        ...options,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          url.searchParams.set(key, String(value));
+        }
       });
-    },
-  };
-}
+    }
 
-function buildApiUrl(baseUrl, path) {
-  const normalizedBase = `${String(baseUrl ?? '').replace(/\/$/, '')}/`;
+    return requestJson(url, options);
+  },
 
-  if (/^https?:\/\//.test(normalizedBase)) {
-    return new URL(path, normalizedBase).toString();
-  }
-
-  if (normalizedBase.endsWith('/api/')) {
-    return `${normalizedBase}${path}`;
-  }
-
-  return `${normalizedBase}api/${path}`;
-}
+  post(path, body, options = {}) {
+    return requestJson(`/api/${path}`, {
+      ...options,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  },
+};
