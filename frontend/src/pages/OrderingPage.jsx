@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import CategoryTabs from '../components/CategoryTabs';
 import CheckoutModal from '../components/CheckoutModal';
 import MessageStack from '../components/MessageStack';
@@ -6,38 +5,23 @@ import OrderSummary from '../components/OrderSummary';
 import ProductGrid from '../components/ProductGrid';
 import ProductModal from '../components/ProductModal';
 import SeatStatusCards from '../components/SeatStatusCards';
-import { useOrderApp } from '../context/OrderAppContext';
+import useOrderingPage from '../hooks/useOrderingPage';
 
 export default function OrderingPage() {
-  const { seat, menu, session, messages, actions } = useOrderApp();
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-
-  function openCheckout() {
-    setIsCheckoutOpen(true);
-  }
-
-  function closeCheckout() {
-    setIsCheckoutOpen(false);
-  }
-
-  function closeProductModal() {
-    setSelectedProduct(null);
-  }
-
-  async function handleConfirmCheckout() {
-    const succeeded = await actions.handleBill();
-    if (succeeded) {
-      closeCheckout();
-    }
-  }
-
-  async function handleConfirmProduct(quantity) {
-    const succeeded = await actions.handleAddOrder(selectedProduct, quantity);
-    if (succeeded) {
-      closeProductModal();
-    }
-  }
+  const {
+    seat,
+    menu,
+    session,
+    messages,
+    isCheckoutOpen,
+    selectedProduct,
+    openCheckout,
+    closeCheckout,
+    closeProductModal,
+    handleConfirmCheckout,
+    handleConfirmProduct,
+    setSelectedProduct,
+  } = useOrderingPage();
 
   return (
     <main className="min-h-screen font-sans text-slate-900">

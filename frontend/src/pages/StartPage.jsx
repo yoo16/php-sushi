@@ -3,7 +3,7 @@ import MessageStack from '../components/MessageStack';
 import StartScreen from '../components/StartScreen';
 
 export default function StartPage() {
-  const { seat, session, messages, actions } = useOrderApp();
+  const { seat, messages, actions } = useOrderApp();
 
   return (
     <>
