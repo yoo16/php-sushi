@@ -34,6 +34,7 @@ const QR_SEAT_DIR = QR_DIR . "seat/";
 require_once LIB_DIR . 'Database.php';
 require_once LIB_DIR . 'Sanitize.php';
 require_once LIB_DIR . 'File.php';
+require_once LIB_DIR . 'Vite.php';
 
 // モデルクラスの読み込み
 require_once APP_DIR . 'models/Product.php';
@@ -53,9 +54,26 @@ if (!defined('BASE_URL')) define('BASE_URL', getBaseUrl());
 
 function getBaseUrl()
 {
-    $documentRoot = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT']));
+    $backendDir = str_replace('\\', '/', realpath(__DIR__) ?: __DIR__);
+    $scriptFile = str_replace('\\', '/', realpath($_SERVER['SCRIPT_FILENAME'] ?? '') ?: ($_SERVER['SCRIPT_FILENAME'] ?? ''));
+    $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+
+    if ($scriptFile !== '' && $scriptName !== '' && strpos($scriptFile, $backendDir) === 0) {
+        $relativePath = ltrim(substr($scriptFile, strlen($backendDir)), '/');
+
+        if ($relativePath !== '' && substr($scriptName, -strlen($relativePath)) === $relativePath) {
+            $basePath = substr($scriptName, 0, -strlen($relativePath));
+            return rtrim($basePath, '/') . '/';
+        }
+    }
+
+    $documentRoot = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: ($_SERVER['DOCUMENT_ROOT'] ?? ''));
     $directory = str_replace('\\', '/', __DIR__);
-    $basePath = str_replace($documentRoot, '', $directory);
-    // BASE_URL を定義（常にルートからの相対パス）
-    return rtrim($basePath, '/') . '/';
+
+    if ($documentRoot !== '' && strpos($directory, $documentRoot) === 0) {
+        $basePath = substr($directory, strlen($documentRoot));
+        return rtrim($basePath, '/') . '/';
+    }
+
+    return '/backend/';
 }

@@ -12,5 +12,6 @@ $products = $category_id > 0 ?
 
 echo json_encode([
     'status' => 'success',
+    'data' => $products,
     'products' => $products,
 ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
