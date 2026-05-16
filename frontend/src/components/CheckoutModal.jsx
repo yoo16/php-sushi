@@ -1,4 +1,7 @@
-export default function CheckoutModal({ baseUrl, loading, onClose, onConfirm, open, orders, total }) {
+import OrderItemList from './OrderItemList';
+import LoadingButton from './LoadingButton';
+
+export default function CheckoutModal({ onClose, onConfirm, open, orders, total }) {
   if (!open) {
     return null;
   }
@@ -13,34 +16,11 @@ export default function CheckoutModal({ baseUrl, loading, onClose, onConfirm, op
         onClick={(event) => event.stopPropagation()}
       >
         <div>
-          <p className="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-sky-700">Checkout</p>
-          <h2 id="checkout-modal-title" className="mt-1.5 text-2xl font-semibold text-slate-900">この内容でお会計しますか</h2>
+          <h2 id="checkout-modal-title" className="text-2xl font-semibold text-slate-900">この内容でお会計しますか</h2>
         </div>
 
-        <div className="mt-5 flex flex-col gap-3">
-          {orders.map((order) => (
-            <article key={order.id} className="flex items-center justify-between gap-3 rounded-[20px] bg-sky-50/90 p-3 max-sm:flex-col max-sm:items-stretch">
-              <div className="flex min-w-0 items-center gap-3">
-                {order.product_image_path ? (
-                  <img
-                    className="h-[60px] w-[60px] flex-none rounded-2xl bg-sky-100 object-cover"
-                    src={buildAssetUrl(baseUrl, order.product_image_path)}
-                    alt={order.product_name}
-                  />
-                ) : (
-                  <div className="grid h-[60px] w-[60px] flex-none place-items-center rounded-2xl bg-sky-100 text-slate-400" />
-                )}
-                <div>
-                  <h3 className="text-base font-semibold text-slate-900">{order.product_name}</h3>
-                  <p className="mt-2 text-sm text-slate-500">{formatPrice(order.price)} / 1皿</p>
-                </div>
-              </div>
-              <div className="text-right max-sm:text-left">
-                <span className="mb-1 block text-sm text-slate-500">×{order.quantity}</span>
-                <strong className="text-base font-semibold text-slate-900">{formatPrice(Number(order.price) * Number(order.quantity))}</strong>
-              </div>
-            </article>
-          ))}
+        <div className="flex flex-col">
+          <OrderItemList orders={orders} />
         </div>
 
         <div className="mt-5 flex items-center justify-between gap-3 rounded-[22px] bg-sky-50 px-5 py-[18px]">
@@ -56,22 +36,16 @@ export default function CheckoutModal({ baseUrl, loading, onClose, onConfirm, op
           >
             戻る
           </button>
-          <button
-            type="button"
+          <LoadingButton
             className="rounded-2xl bg-sky-600 px-[18px] py-[14px] font-medium text-white transition duration-150 enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={loading}
             onClick={onConfirm}
           >
-            {loading ? '会計処理中...' : '会計を確定する'}
-          </button>
+            会計を確定する
+          </LoadingButton>
         </div>
       </div>
     </div>
   );
-}
-
-function buildAssetUrl(baseUrl, path) {
-  return `${String(baseUrl).replace(/\/$/, '')}/${String(path).replace(/^\//, '')}`;
 }
 
 function formatPrice(value) {

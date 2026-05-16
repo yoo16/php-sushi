@@ -1,11 +1,20 @@
-export default function OrderItemCard({ baseUrl, order }) {
+import { useAppConfig } from '../context/AppConfigContext';
+import { buildAssetUrl } from '../utils/assetUrl';
+
+export default function OrderItemCard({ order }) {
+  const { assetBaseUrl = '/' } = useAppConfig();
+
   return (
     <article className="flex items-center justify-between gap-3 rounded-[20px] p-3">
-      <img
-        className="h-[60px] w-[60px] flex-none overflow-hidden rounded-2xl object-contain"
-        src={buildAssetUrl(baseUrl, order.product_image_path)}
-        alt={order.product_name}
-      />
+      {order.product_image_path ? (
+        <img
+          className="h-[60px] w-[60px] flex-none rounded-2xl overflow-hidden object-contain"
+          src={buildAssetUrl(assetBaseUrl, order.product_image_path)}
+          alt={order.product_name}
+        />
+      ) : (
+        <div className="grid h-[60px] w-[60px] flex-none place-items-center rounded-2xl bg-sky-100 text-slate-400" />
+      )}
       <div className="min-w-0 flex-1">
         <h3 className="text-base font-semibold text-slate-900">{order.product_name}</h3>
         <p className="mt-2 text-sm text-slate-500">{formatPrice(order.price)} / 1皿</p>
@@ -16,10 +25,6 @@ export default function OrderItemCard({ baseUrl, order }) {
       </div>
     </article>
   );
-}
-
-function buildAssetUrl(baseUrl, path) {
-  return `${String(baseUrl).replace(/\/$/, '')}/${String(path).replace(/^\//, '')}`;
 }
 
 function formatPrice(value) {

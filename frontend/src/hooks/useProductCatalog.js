@@ -1,10 +1,9 @@
 import { startTransition, useEffect } from 'react';
 import { useState } from 'react';
-import { fetchCategories, fetchProducts } from '../services/api';
 
 const ALL_CATEGORY_ID = 0;
 
-export default function useProductCatalog({ apiBaseUrl, screen, setErrorMessage }) {
+export default function useProductCatalog({ categoryService, productService, screen, setErrorMessage }) {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORY_ID);
@@ -15,9 +14,9 @@ export default function useProductCatalog({ apiBaseUrl, screen, setErrorMessage 
 
     async function loadCategories() {
       try {
-        const categoriesResponse = await fetchCategories(apiBaseUrl);
+        const categories = await categoryService.loadCategories();
         if (!ignore) {
-          setCategories(categoriesResponse.categories ?? []);
+          setCategories(categories);
         }
       } catch (error) {
         if (!ignore) {
@@ -31,7 +30,7 @@ export default function useProductCatalog({ apiBaseUrl, screen, setErrorMessage 
     return () => {
       ignore = true;
     };
-  }, [apiBaseUrl, setErrorMessage]);
+  }, [categoryService, setErrorMessage]);
 
   useEffect(() => {
     let ignore = false;
@@ -44,9 +43,9 @@ export default function useProductCatalog({ apiBaseUrl, screen, setErrorMessage 
       setIsProductsLoading(true);
 
       try {
-        const response = await fetchProducts(apiBaseUrl, selectedCategory);
+        const products = await productService.loadProducts(selectedCategory);
         if (!ignore) {
-          setProducts(response.products ?? response.data ?? []);
+          setProducts(products);
         }
       } catch (error) {
         if (!ignore) {
@@ -64,7 +63,7 @@ export default function useProductCatalog({ apiBaseUrl, screen, setErrorMessage 
     return () => {
       ignore = true;
     };
-  }, [apiBaseUrl, screen, selectedCategory, setErrorMessage, setIsProductsLoading, setProducts]);
+  }, [productService, screen, selectedCategory, setErrorMessage, setIsProductsLoading, setProducts]);
 
   function handleCategoryChange(categoryId) {
     setErrorMessage('');

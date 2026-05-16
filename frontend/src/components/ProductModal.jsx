@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useAppConfig } from '../context/AppConfigContext';
+import { buildAssetUrl } from '../utils/assetUrl';
+import LoadingButton from './LoadingButton';
 
-export default function ProductModal({ baseUrl, disabled, loading, onClose, onConfirm, product }) {
+export default function ProductModal({ disabled, onClose, onConfirm, product }) {
+  const { assetBaseUrl = '/' } = useAppConfig();
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -29,7 +33,7 @@ export default function ProductModal({ baseUrl, disabled, loading, onClose, onCo
             {product.image_path ? (
               <img
                 className="h-full w-full object-cover"
-                src={buildAssetUrl(baseUrl, product.image_path)}
+                src={buildAssetUrl(assetBaseUrl, product.image_path)}
                 alt={product.name}
               />
             ) : (
@@ -72,22 +76,17 @@ export default function ProductModal({ baseUrl, disabled, loading, onClose, onCo
           >
             閉じる
           </button>
-          <button
-            type="button"
+          <LoadingButton
             className="rounded-2xl bg-sky-600 px-[18px] py-[14px] font-medium text-white transition duration-150 enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={disabled || loading}
+            disabled={disabled}
             onClick={() => onConfirm(quantity)}
           >
-            {loading ? '追加中...' : '注文'}
-          </button>
+            注文
+          </LoadingButton>
         </div>
       </div>
     </div>
   );
-}
-
-function buildAssetUrl(baseUrl, path) {
-  return `${String(baseUrl).replace(/\/$/, '')}/${String(path).replace(/^\//, '')}`;
 }
 
 function formatPrice(value) {

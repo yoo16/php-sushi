@@ -1,4 +1,6 @@
-export default function StartScreen({ loading, onSeatChange, onStart, seatId, seats }) {
+import LoadingButton from './LoadingButton';
+
+export default function StartScreen({ onSeatChange, onStart, seatId, seats }) {
   return (
     <main className="min-h-screen font-sans text-slate-900">
       <div className="mx-auto flex min-h-screen w-[min(1240px,calc(100%-24px))] items-center justify-center py-6 pb-10 max-sm:w-[min(100%,calc(100%-16px))] max-sm:py-4 max-sm:pb-7">
@@ -31,14 +33,13 @@ export default function StartScreen({ loading, onSeatChange, onStart, seatId, se
             </p>
           </div>
 
-          <button
-            type="button"
+          <LoadingButton
             className="mt-8 rounded-2xl bg-black px-8 py-4 text-lg font-medium text-white transition duration-150 enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={loading || Number(seatId) <= 0}
+            disabled={Number(seatId) <= 0}
             onClick={onStart}
           >
-            {loading ? '開始準備中...' : '注文を開始する'}
-          </button>
+            注文を開始する
+          </LoadingButton>
         </section>
       </div>
     </main>

@@ -1,4 +1,4 @@
-export default function LoadingModal({ message }) {
+export default function LoadingOverlay({ message }) {
   return (
     <div className="fixed inset-0 z-40 grid place-items-center bg-sky-50/75 p-5 backdrop-blur-sm">
       <div className="flex w-full max-w-sm flex-col items-center rounded-[28px] border border-slate-200 bg-white px-8 py-10 text-center shadow-[0_32px_90px_rgba(20,56,83,0.18)]">

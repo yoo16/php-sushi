@@ -9,62 +9,32 @@ async function requestJson(url, options = {}) {
   return payload;
 }
 
-export function fetchCategories(baseUrl) {
-  return requestJson(buildApiUrl(baseUrl, 'category/fetch.php'));
-}
+export function createApiClient(baseUrl) {
+  return {
+    get(path, query) {
+      const url = new URL(buildApiUrl(baseUrl, path), window.location.origin);
 
-export function fetchProducts(baseUrl, categoryId) {
-  const url = new URL(buildApiUrl(baseUrl, 'product/fetch.php'), window.location.origin);
+      if (query) {
+        Object.entries(query).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== '') {
+            url.searchParams.set(key, String(value));
+          }
+        });
+      }
 
-  if (Number(categoryId) > 0) {
-    url.searchParams.set('category_id', String(categoryId));
-  }
-
-  return requestJson(url);
-}
-
-export function fetchOrders(baseUrl, visitId) {
-  const url = new URL(buildApiUrl(baseUrl, 'order/fetch.php'), window.location.origin);
-  url.searchParams.set('visit_id', String(visitId));
-  return requestJson(url);
-}
-
-export function fetchVisit(baseUrl, visitId) {
-  const url = new URL(buildApiUrl(baseUrl, 'visit/find.php'), window.location.origin);
-  url.searchParams.set('id', String(visitId));
-  return requestJson(url);
-}
-
-export function fetchSeats(baseUrl) {
-  return requestJson(buildApiUrl(baseUrl, 'seat/fetch.php'));
-}
-
-export function joinVisit(baseUrl, seatId) {
-  return requestJson(buildApiUrl(baseUrl, 'visit/join.php'), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+      return requestJson(url);
     },
-    body: JSON.stringify({
-      seat_id: seatId,
-    }),
-  });
-}
 
-export function addOrder(baseUrl, payload) {
-  return requestJson(buildApiUrl(baseUrl, 'order/add.php'), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+    post(path, body) {
+      return requestJson(buildApiUrl(baseUrl, path), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
     },
-    body: JSON.stringify(payload),
-  });
-}
-
-export function billVisit(baseUrl, visitId) {
-  const url = new URL(buildApiUrl(baseUrl, 'order/billed.php'), window.location.origin);
-  url.searchParams.set('visit_id', String(visitId));
-  return requestJson(url);
+  };
 }
 
 function buildApiUrl(baseUrl, path) {

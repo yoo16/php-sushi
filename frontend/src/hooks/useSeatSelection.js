@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { fetchSeats } from '../services/api';
+import { findSeatById } from '../domain/seat';
 import { getInitialSeatId, getInitialSeatNumber, persistSelectedSeat } from '../utils/orderSessionStorage';
 
-export default function useSeatSelection({ config, apiBaseUrl, setErrorMessage }) {
+export default function useSeatSelection({ config, seatService, setErrorMessage }) {
   const [seats, setSeats] = useState([]);
   const [selectedSeatId, setSelectedSeatId] = useState(() => getInitialSeatId(config));
   const [selectedSeatNumber, setSelectedSeatNumber] = useState(() => getInitialSeatNumber(config));
@@ -10,23 +10,19 @@ export default function useSeatSelection({ config, apiBaseUrl, setErrorMessage }
   useEffect(() => {
     let ignore = false;
 
-    async function loadSeats() {
+    async function loadSeatOptions() {
       try {
-        const seatsResponse = await fetchSeats(apiBaseUrl);
+        const seatData = await seatService.loadSeats(selectedSeatId, selectedSeatNumber);
         if (ignore) {
           return;
         }
 
-        const nextSeats = seatsResponse.seats ?? [];
-        setSeats(nextSeats);
+        setSeats(seatData.seats);
+        setSelectedSeatId(seatData.selectedSeat.seatId);
+        setSelectedSeatNumber(seatData.selectedSeat.seatNumber);
 
-        const matchedSeat = nextSeats.find((seat) => Number(seat.id) === Number(selectedSeatId));
-        if (matchedSeat) {
-          setSelectedSeatNumber(matchedSeat.number);
-        } else if (nextSeats.length === 1) {
-          setSelectedSeatId(Number(nextSeats[0].id));
-          setSelectedSeatNumber(nextSeats[0].number);
-          persistSelectedSeat(nextSeats[0].id, nextSeats[0].number);
+        if (seatData.selectedSeat.shouldPersist) {
+          persistSelectedSeat(seatData.selectedSeat.seatId, seatData.selectedSeat.seatNumber);
         }
       } catch (error) {
         if (!ignore) {
@@ -35,15 +31,15 @@ export default function useSeatSelection({ config, apiBaseUrl, setErrorMessage }
       }
     }
 
-    loadSeats();
+    loadSeatOptions();
 
     return () => {
       ignore = true;
     };
-  }, [apiBaseUrl, setErrorMessage]);
+  }, [seatService, setErrorMessage]);
 
   function handleSeatChange(nextSeatId) {
-    const seat = seats.find((item) => Number(item.id) === Number(nextSeatId));
+    const seat = findSeatById(seats, nextSeatId);
     const nextSeatNumber = seat?.number ?? '-';
 
     setSelectedSeatId(nextSeatId);

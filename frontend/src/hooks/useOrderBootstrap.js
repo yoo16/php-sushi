@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
-import { fetchOrders, fetchVisit } from '../services/api';
 import { clearStoredOrderSession } from '../utils/orderSessionStorage';
 
-export default function useOrderBootstrap({ apiBaseUrl, session, setErrorMessage }) {
+export default function useOrderBootstrap({ orderSessionService, session, setErrorMessage }) {
   const { restoredSession, setVisitId, setVisitStatus, setOrders, setTotal, setScreen, setCompletedTotal, setIsBooting } = session;
 
   useEffect(() => {
@@ -10,31 +9,22 @@ export default function useOrderBootstrap({ apiBaseUrl, session, setErrorMessage
 
     async function bootstrap() {
       try {
-        if (restoredSession.visitId > 0) {
-          const visitResponse = await fetchVisit(apiBaseUrl, restoredSession.visitId);
-          const restoredVisit = visitResponse.visit;
+        const restored = await orderSessionService.restoreOrderSession(restoredSession);
+        if (ignore) {
+          return;
+        }
 
-          if (restoredVisit?.status === 'seated') {
-            const ordersResponse = await fetchOrders(apiBaseUrl, restoredVisit.id);
-            if (ignore) {
-              return;
-            }
-
-            setVisitId(Number(restoredVisit.id));
-            setVisitStatus(restoredVisit.status);
-            setOrders(ordersResponse.orders ?? []);
-            setTotal(ordersResponse.total ?? 0);
-            setScreen('ordering');
-          } else if (restoredVisit && ['billed', 'paid'].includes(restoredVisit.status)) {
-            if (ignore) {
-              return;
-            }
-
-            setCompletedTotal(Number(restoredVisit.total_with_tax ?? restoredSession.completedTotal ?? 0));
-            setScreen('complete');
-          } else {
-            clearStoredOrderSession();
-          }
+        if (restored.type === 'ordering') {
+          setVisitId(restored.visitId);
+          setVisitStatus(restored.visitStatus);
+          setOrders(restored.orders);
+          setTotal(restored.total);
+          setScreen('ordering');
+        } else if (restored.type === 'complete') {
+          setCompletedTotal(restored.completedTotal);
+          setScreen('complete');
+        } else if (restored.type === 'invalid') {
+          clearStoredOrderSession();
         }
       } catch (error) {
         if (!ignore) {
@@ -53,7 +43,7 @@ export default function useOrderBootstrap({ apiBaseUrl, session, setErrorMessage
       ignore = true;
     };
   }, [
-    apiBaseUrl,
+    orderSessionService,
     restoredSession.completedTotal,
     restoredSession.visitId,
     setCompletedTotal,

@@ -1,5 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { useAppConfig } from './context/AppConfigContext';
+import { OrderAppProvider } from './context/OrderAppContext';
+import { createApiClient } from './services/api';
+import { createCategoryService } from './services/categoryService';
+import { createOrderService } from './services/orderService';
+import { createOrderSessionService } from './services/orderSessionService';
+import { createProductService } from './services/productService';
+import { createSeatService } from './services/seatService';
+import { createVisitService } from './services/visitService';
 import useOrderBootstrap from './hooks/useOrderBootstrap';
 import useOrderFlow from './hooks/useOrderFlow';
 import useOrderSession from './hooks/useOrderSession';
@@ -16,33 +25,45 @@ const SCREEN_PATHS = {
   complete: '/complete',
 };
 
-export default function App({ config }) {
+export default function App() {
+  const config = useAppConfig();
   const apiBaseUrl = config.apiBaseUrl ?? '/api/';
-  const assetBaseUrl = config.assetBaseUrl ?? config.baseUrl ?? '/';
+  const apiClient = useMemo(() => createApiClient(apiBaseUrl), [apiBaseUrl]);
+  const categoryService = useMemo(() => createCategoryService(apiClient), [apiClient]);
+  const productService = useMemo(() => createProductService(apiClient), [apiClient]);
+  const seatService = useMemo(() => createSeatService(apiClient), [apiClient]);
+  const visitService = useMemo(() => createVisitService(apiClient), [apiClient]);
+  const orderService = useMemo(() => createOrderService(apiClient), [apiClient]);
+  const orderSessionService = useMemo(
+    () => createOrderSessionService({ visitService, orderService }),
+    [orderService, visitService]
+  );
   const navigate = useNavigate();
   const location = useLocation();
   const messages = useMessageState();
   const session = useOrderSession(config);
-  const seat = useSeatSelection({
+  const seatState = useSeatSelection({
     config,
-    apiBaseUrl,
+    seatService,
     setErrorMessage: messages.setErrorMessage,
   });
   const menu = useProductCatalog({
-    apiBaseUrl,
+    categoryService,
+    productService,
     screen: session.screen,
     setErrorMessage: messages.setErrorMessage,
   });
 
   useOrderBootstrap({
-    apiBaseUrl,
+    orderSessionService,
     session,
     setErrorMessage: messages.setErrorMessage,
   });
 
   const { handleStartOrder, handleAddOrder, handleBill, returnToTopScreen } = useOrderFlow({
-    apiBaseUrl,
-    seat,
+    orderService,
+    orderSessionService,
+    seat: seatState,
     menu,
     session,
     messages,
@@ -60,19 +81,27 @@ export default function App({ config }) {
     return null;
   }
 
-  const actions = {
-    handleStartOrder,
-    handleAddOrder,
-    handleBill,
-    returnToTopScreen,
+  const orderApp = {
+    seat: seatState,
+    menu,
+    session,
+    messages,
+    actions: {
+      handleStartOrder,
+      handleAddOrder,
+      handleBill,
+      returnToTopScreen,
+    },
   };
 
   return (
-    <Routes>
-      <Route path="/" element={<StartPage seat={seat} session={session} messages={messages} actions={actions} />} />
-      <Route path="/order" element={<OrderingPage assetBaseUrl={assetBaseUrl} seat={seat} menu={menu} session={session} messages={messages} actions={actions} />} />
-      <Route path="/complete" element={<CheckoutCompletePage seat={seat} session={session} actions={actions} />} />
-      <Route path="*" element={<Navigate to={SCREEN_PATHS[session.screen] ?? SCREEN_PATHS.start} replace />} />
-    </Routes>
+    <OrderAppProvider value={orderApp}>
+      <Routes>
+        <Route path="/" element={<StartPage />} />
+        <Route path="/order" element={<OrderingPage />} />
+        <Route path="/complete" element={<CheckoutCompletePage />} />
+        <Route path="*" element={<Navigate to={SCREEN_PATHS[session.screen] ?? SCREEN_PATHS.start} replace />} />
+      </Routes>
+    </OrderAppProvider>
   );
 }

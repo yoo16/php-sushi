@@ -6,9 +6,6 @@ export default function useOrderSession(config) {
   const [orders, setOrders] = useState([]);
   const [total, setTotal] = useState(0);
   const [isBooting, setIsBooting] = useState(true);
-  const [isStartingOrder, setIsStartingOrder] = useState(false);
-  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
-  const [isBilling, setIsBilling] = useState(false);
   const [visitId, setVisitId] = useState(restoredSession.visitId);
   const [visitStatus, setVisitStatus] = useState(config.visitStatus ?? 'seated');
   const [completedTotal, setCompletedTotal] = useState(restoredSession.completedTotal);
@@ -30,12 +27,6 @@ export default function useOrderSession(config) {
     setTotal,
     isBooting,
     setIsBooting,
-    isStartingOrder,
-    setIsStartingOrder,
-    isSubmittingOrder,
-    setIsSubmittingOrder,
-    isBilling,
-    setIsBilling,
     visitId,
     setVisitId,
     visitStatus,

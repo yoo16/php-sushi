@@ -1,46 +1,33 @@
-import { addOrder, billVisit, fetchOrders, fetchVisit, joinVisit } from '../services/api';
-import { ensureVisitSession, playThanksVoice } from '../utils/orderSession';
+import { playThanksVoice } from '../utils/orderSession';
 
-export default function useOrderFlow({ apiBaseUrl, seat, menu, session, messages }) {
+export default function useOrderFlow({ orderService, orderSessionService, seat, menu, session, messages }) {
   async function refreshOrders(nextVisitId = session.visitId) {
-    if (Number(nextVisitId) <= 0) {
-      session.setOrders([]);
-      session.setTotal(0);
-      return;
-    }
-
-    const ordersResponse = await fetchOrders(apiBaseUrl, nextVisitId);
-    session.setOrders(ordersResponse.orders ?? []);
-    session.setTotal(ordersResponse.total ?? 0);
+    const orderData = await orderService.loadOrders(nextVisitId);
+    session.setOrders(orderData.orders);
+    session.setTotal(orderData.total);
   }
 
   async function handleStartOrder() {
-    session.setIsStartingOrder(true);
     messages.setErrorMessage('');
     messages.setFlashMessage('');
     session.setCompletedTotal(0);
 
     try {
-      const resolvedVisit = await ensureVisitSession(apiBaseUrl, seat.seatId, session.visitId, {
-        fetchVisit,
-        joinVisit,
-      });
+      const resolvedVisit = await orderSessionService.startOrderSession(seat.seatId, session.visitId);
       if (!resolvedVisit) {
         throw new Error('有効な注文セッションを開始できませんでした。');
       }
 
-      const ordersResponse = await fetchOrders(apiBaseUrl, resolvedVisit.id);
+      const orderData = await orderService.loadOrders(resolvedVisit.id);
       session.setVisitId(Number(resolvedVisit.id));
       session.setVisitStatus(resolvedVisit.status ?? 'seated');
-      session.setOrders(ordersResponse.orders ?? []);
-      session.setTotal(ordersResponse.total ?? 0);
+      session.setOrders(orderData.orders);
+      session.setTotal(orderData.total);
       menu.resetCatalogState();
       session.setScreen('ordering');
       session.setCompletedTotal(0);
     } catch (error) {
       messages.setErrorMessage(error.message);
-    } finally {
-      session.setIsStartingOrder(false);
     }
   }
 
@@ -49,17 +36,10 @@ export default function useOrderFlow({ apiBaseUrl, seat, menu, session, messages
       return;
     }
 
-    session.setIsSubmittingOrder(true);
     messages.setErrorMessage('');
 
     try {
-      await addOrder(apiBaseUrl, {
-        product_id: Number(product.id),
-        product_name: product.name,
-        product_image_path: product.image_path,
-        quantity,
-        visit_id: session.visitId,
-      });
+      await orderService.submitOrder(session.visitId, product, quantity);
       await refreshOrders(session.visitId);
       playThanksVoice();
       messages.setFlashMessage(`${product.name} を ${quantity} 皿追加しました。`);
@@ -67,17 +47,14 @@ export default function useOrderFlow({ apiBaseUrl, seat, menu, session, messages
     } catch (error) {
       messages.setErrorMessage(error.message);
       return false;
-    } finally {
-      session.setIsSubmittingOrder(false);
     }
   }
 
   async function handleBill() {
-    session.setIsBilling(true);
     messages.setErrorMessage('');
 
     try {
-      const response = await billVisit(apiBaseUrl, session.visitId);
+      const response = await orderService.checkoutOrder(session.visitId);
       const billedTotal = Number(response.total ?? session.total ?? 0);
       session.setCompletedTotal(billedTotal);
       messages.setFlashMessage('');
@@ -86,8 +63,6 @@ export default function useOrderFlow({ apiBaseUrl, seat, menu, session, messages
     } catch (error) {
       messages.setErrorMessage(error.message);
       return false;
-    } finally {
-      session.setIsBilling(false);
     }
   }
 
