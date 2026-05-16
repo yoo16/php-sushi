@@ -48,14 +48,5 @@ export async function startOrderSession(seatId, currentVisitId, options = {}) {
     return null;
   }
 
-  if (typeof joinResponse.visit === 'object') {
-    return joinResponse.visit;
-  }
-
-  const resolvedVisitResponse = await findVisitById(joinResponse.visit, options);
-  if (resolvedVisitResponse.visit) {
-    return resolvedVisitResponse.visit;
-  }
-
-  return null;
+  return joinResponse.visit;
 }

@@ -20,5 +20,5 @@ export async function submitOrder(visitId, product, quantity, options = {}) {
 }
 
 export async function checkoutOrder(visitId, options = {}) {
-  return apiClient.get('order/billed.php', { visit_id: String(visitId) }, options);
+  return apiClient.post('order/billed.php', { visit_id: Number(visitId) }, options);
 }

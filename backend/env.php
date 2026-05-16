@@ -11,8 +11,8 @@ defineEnvConstant('DB_PASSWORD', $env['DB_PASSWORD'] ?? 'root');
 
 defineEnvConstant('APP_KEY', $env['APP_KEY'] ?? 'haru_sushi');
 defineEnvConstant('SITE_TITLE', $env['SITE_TITLE'] ?? 'はる寿司-管理者');
-defineEnvConstant('CLIENT_BASE_URL', normalizeUrl($env['CLIENT_BASE_URL'] ?? 'http://localhost/php-sushi/backend/'));
-defineEnvConstant('API_BASE_URL', normalizeUrl($env['API_BASE_URL'] ?? 'http://localhost/php-sushi/backend/api/'));
+defineEnvConstant('CLIENT_BASE_URL', normalizeUrl($env['CLIENT_BASE_URL'] ?? 'http://localhost/react-sushi/backend/'));
+defineEnvConstant('API_BASE_URL', normalizeUrl($env['API_BASE_URL'] ?? 'http://localhost/react-sushi/backend/api/'));
 defineEnvConstant('VITE_DEV_SERVER_URL', normalizeUrl($env['VITE_DEV_SERVER_URL'] ?? 'http://localhost:5173/'));
 
 function loadEnvFile($path)

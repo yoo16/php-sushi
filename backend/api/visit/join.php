@@ -27,7 +27,8 @@ $visit = $visitModel->exists($seat_id);
 
 // 席がなければ新規作成
 if (!$visit) {
-    $visit = $visitModel->create($seat_id);
+    $visitId = $visitModel->create($seat_id);
+    $visit = $visitModel->find($visitId);
 }
 echo json_encode($result = [
     'status' => 'success',
