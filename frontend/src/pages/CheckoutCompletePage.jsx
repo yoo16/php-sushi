@@ -1,14 +1,14 @@
-import { useOrderApp } from '../context/OrderAppContext';
 import CheckoutCompleteScreen from '../components/CheckoutCompleteScreen';
+import useCheckoutCompletePage from '../hooks/useCheckoutCompletePage';
 
 export default function CheckoutCompletePage() {
-  const { seat, session, actions } = useOrderApp();
+  const { seatNumber, total, returnToTopScreen } = useCheckoutCompletePage();
 
   return (
     <CheckoutCompleteScreen
-      onBackToTop={actions.returnToTopScreen}
-      seatNumber={seat.seatNumber}
-      total={session.completedTotal}
+      onBackToTop={returnToTopScreen}
+      seatNumber={seatNumber}
+      total={total}
     />
   );
 }

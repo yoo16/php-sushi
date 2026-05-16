@@ -8,14 +8,13 @@ export default function useSeatSelection({ config, seatService, setErrorMessage 
   const [selectedSeatNumber, setSelectedSeatNumber] = useState(() => getInitialSeatNumber(config));
 
   useEffect(() => {
-    let ignore = false;
+    const controller = new AbortController();
 
     async function loadSeatOptions() {
       try {
-        const seatData = await seatService.loadSeats(selectedSeatId, selectedSeatNumber);
-        if (ignore) {
-          return;
-        }
+        const seatData = await seatService.loadSeats(selectedSeatId, selectedSeatNumber, {
+          signal: controller.signal,
+        });
 
         setSeats(seatData.seats);
         setSelectedSeatId(seatData.selectedSeat.seatId);
@@ -25,7 +24,7 @@ export default function useSeatSelection({ config, seatService, setErrorMessage 
           persistSelectedSeat(seatData.selectedSeat.seatId, seatData.selectedSeat.seatNumber);
         }
       } catch (error) {
-        if (!ignore) {
+        if (error.name !== 'AbortError') {
           setErrorMessage(error.message);
         }
       }
@@ -34,7 +33,7 @@ export default function useSeatSelection({ config, seatService, setErrorMessage 
     loadSeatOptions();
 
     return () => {
-      ignore = true;
+      controller.abort();
     };
   }, [seatService, setErrorMessage]);
 

@@ -1,9 +1,9 @@
-import { useOrderApp } from '../context/OrderAppContext';
 import MessageStack from '../components/MessageStack';
 import StartScreen from '../components/StartScreen';
+import useStartPage from '../hooks/useStartPage';
 
 export default function StartPage() {
-  const { seat, messages, actions } = useOrderApp();
+  const { seat, messages, handleStartOrder } = useStartPage();
 
   return (
     <>
@@ -16,7 +16,7 @@ export default function StartPage() {
         seatId={seat.seatId}
         seats={seat.seats}
         onSeatChange={seat.handleSeatChange}
-        onStart={actions.handleStartOrder}
+        onStart={handleStartOrder}
       />
     </>
   );

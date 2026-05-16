@@ -5,14 +5,13 @@ export default function useOrderBootstrap({ orderSessionService, session, setErr
   const { restoredSession, setVisitId, setVisitStatus, setOrders, setTotal, setScreen, setCompletedTotal, setIsBooting } = session;
 
   useEffect(() => {
-    let ignore = false;
+    const controller = new AbortController();
 
     async function bootstrap() {
       try {
-        const restored = await orderSessionService.restoreOrderSession(restoredSession);
-        if (ignore) {
-          return;
-        }
+        const restored = await orderSessionService.restoreOrderSession(restoredSession, {
+          signal: controller.signal,
+        });
 
         if (restored.type === 'ordering') {
           setVisitId(restored.visitId);
@@ -27,11 +26,11 @@ export default function useOrderBootstrap({ orderSessionService, session, setErr
           clearStoredOrderSession();
         }
       } catch (error) {
-        if (!ignore) {
+        if (error.name !== 'AbortError') {
           setErrorMessage(error.message);
         }
       } finally {
-        if (!ignore) {
+        if (!controller.signal.aborted) {
           setIsBooting(false);
         }
       }
@@ -40,7 +39,7 @@ export default function useOrderBootstrap({ orderSessionService, session, setErr
     bootstrap();
 
     return () => {
-      ignore = true;
+      controller.abort();
     };
   }, [
     orderSessionService,

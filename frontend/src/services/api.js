@@ -11,7 +11,7 @@ async function requestJson(url, options = {}) {
 
 export function createApiClient(baseUrl) {
   return {
-    get(path, query) {
+    get(path, query, options = {}) {
       const url = new URL(buildApiUrl(baseUrl, path), window.location.origin);
 
       if (query) {
@@ -22,11 +22,12 @@ export function createApiClient(baseUrl) {
         });
       }
 
-      return requestJson(url);
+      return requestJson(url, options);
     },
 
-    post(path, body) {
+    post(path, body, options = {}) {
       return requestJson(buildApiUrl(baseUrl, path), {
+        ...options,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

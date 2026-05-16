@@ -8,7 +8,14 @@ export default defineConfig(({ mode }) => {
 
   return {
     root: path.resolve(__dirname),
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react({
+        babel: {
+          plugins: ['babel-plugin-react-compiler'],
+        },
+      }),
+      tailwindcss(),
+    ],
     server: {
       host: '0.0.0.0',
       port: 5173,

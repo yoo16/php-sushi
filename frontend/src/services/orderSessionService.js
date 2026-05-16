@@ -1,17 +1,17 @@
 export function createOrderSessionService({ visitService, orderService }) {
   return {
-    async restoreOrderSession(restoredSession) {
+    async restoreOrderSession(restoredSession, options = {}) {
       if (restoredSession.visitId <= 0) {
         return {
           type: 'empty',
         };
       }
 
-      const visitResponse = await visitService.findVisitById(restoredSession.visitId);
+      const visitResponse = await visitService.findVisitById(restoredSession.visitId, options);
       const restoredVisit = visitResponse.visit;
 
       if (restoredVisit?.status === 'seated') {
-        const orderData = await orderService.loadOrders(restoredVisit.id);
+        const orderData = await orderService.loadOrders(restoredVisit.id, options);
 
         return {
           type: 'ordering',
@@ -34,9 +34,9 @@ export function createOrderSessionService({ visitService, orderService }) {
       };
     },
 
-    async startOrderSession(seatId, currentVisitId) {
+    async startOrderSession(seatId, currentVisitId, options = {}) {
       if (Number(currentVisitId) > 0) {
-        const visitResponse = await visitService.findVisitById(currentVisitId);
+        const visitResponse = await visitService.findVisitById(currentVisitId, options);
         if (visitResponse.status === 'success' && visitResponse.visit) {
           return visitResponse.visit;
         }
@@ -46,7 +46,7 @@ export function createOrderSessionService({ visitService, orderService }) {
         return null;
       }
 
-      const joinResponse = await visitService.joinVisit(seatId);
+      const joinResponse = await visitService.joinVisit(seatId, options);
       if (joinResponse.status !== 'success' || !joinResponse.visit) {
         return null;
       }
@@ -55,7 +55,7 @@ export function createOrderSessionService({ visitService, orderService }) {
         return joinResponse.visit;
       }
 
-      const resolvedVisitResponse = await visitService.findVisitById(joinResponse.visit);
+      const resolvedVisitResponse = await visitService.findVisitById(joinResponse.visit, options);
       if (resolvedVisitResponse.status === 'success' && resolvedVisitResponse.visit) {
         return resolvedVisitResponse.visit;
       }
