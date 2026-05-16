@@ -171,107 +171,113 @@ export default function App({ config }) {
 
   if (isBooting) {
     return (
-      <main className="menu-shell menu-shell-loading">
-        <section className="page-card loading-card">
-          <p className="section-eyebrow">Seat {seatNumber}</p>
-          <h1>注文画面を準備しています</h1>
+      <main className="mx-auto grid min-h-screen w-[min(1240px,calc(100%-24px))] items-center py-6 pb-10 font-sans max-sm:w-[min(100%,calc(100%-16px))] max-sm:py-4 max-sm:pb-7">
+        <section className="rounded-[28px] border border-slate-200 bg-white/90 p-[22px] shadow-[0_24px_60px_rgba(32,76,112,0.12)]">
+          <p className="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-sky-700">Seat {seatNumber}</p>
+          <h1 className="mt-1.5 text-[clamp(2.2rem,5vw,4.2rem)] font-semibold leading-[0.95] text-slate-900">注文画面を準備しています</h1>
         </section>
       </main>
     );
   }
 
   return (
-    <main className="menu-shell">
-      <header className="page-header">
-        <div className="brand-block">
-          <p className="brand-kicker">Haru Sushi</p>
-          <h1>ご注文</h1>
-          <p className="brand-copy">カテゴリを選んで、食べたいお皿をそのまま注文できます。</p>
-        </div>
-        <div className="header-side">
-          <div className="seat-chip">
-            <span>座席番号</span>
-            <strong>{seatNumber}</strong>
+    <main className="min-h-screen font-sans text-slate-900">
+      <div className="mx-auto w-[min(1240px,calc(100%-24px))] py-6 pb-10 max-sm:w-[min(100%,calc(100%-16px))] max-sm:py-4 max-sm:pb-7">
+        <header className="mb-5 flex items-start justify-between gap-5 max-md:flex-col max-md:items-stretch">
+          <div>
+            <p className="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-sky-700">Haru Sushi</p>
+            <h1 className="mt-1.5 text-[clamp(2.2rem,5vw,4.2rem)] font-semibold leading-[0.95] text-slate-900">ご注文</h1>
+            <p className="mt-3 max-w-[34rem] text-slate-500">カテゴリを選んで、食べたいお皿をそのまま注文できます。</p>
           </div>
-          <div className="status-chip">
-            <span>状態</span>
-            <strong>{isOrderClosed ? '会計済み' : '注文受付中'}</strong>
-          </div>
-        </div>
-      </header>
-
-      <section className="dashboard-strip">
-        <article className="stat-card">
-          <span>注文数</span>
-          <strong>{orderCount}</strong>
-        </article>
-        <article className="stat-card">
-          <span>合計</span>
-          <strong>{formatPrice(total)}</strong>
-        </article>
-      </section>
-
-      {errorMessage ? <p className="notice notice-error">{errorMessage}</p> : null}
-      {flashMessage ? <p className="notice notice-success">{flashMessage}</p> : null}
-      {isOrderClosed ? (
-        <p className="notice notice-muted">この注文セッションは会計済みです。新しい注文は追加できません。</p>
-      ) : null}
-
-      <section className="menu-layout">
-        <div className="menu-main page-card">
-          <div className="section-heading">
-            <div>
-              <p className="section-eyebrow">Category</p>
-              <h2>カテゴリから選ぶ</h2>
+          <div className="flex flex-wrap justify-end gap-3 max-md:justify-start">
+            <div className="min-w-[140px] rounded-[28px] border border-slate-200 bg-white/90 px-[18px] py-4 shadow-[0_24px_60px_rgba(32,76,112,0.12)] max-sm:flex-1">
+              <span className="mb-2 block text-[0.82rem] text-slate-500">座席番号</span>
+              <strong className="text-xl font-semibold text-slate-900">{seatNumber}</strong>
+            </div>
+            <div className="min-w-[140px] rounded-[28px] border border-slate-200 bg-white/90 px-[18px] py-4 shadow-[0_24px_60px_rgba(32,76,112,0.12)] max-sm:flex-1">
+              <span className="mb-2 block text-[0.82rem] text-slate-500">状態</span>
+              <strong className="text-xl font-semibold text-slate-900">{isOrderClosed ? '会計済み' : '注文受付中'}</strong>
             </div>
           </div>
-          <CategoryTabs
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onChange={handleCategoryChange}
-          />
-          <ProductGrid
-            baseUrl={assetBaseUrl}
-            loading={isProductsLoading}
-            products={products}
-            disabled={isOrderClosed}
-            onSelectProduct={setSelectedProduct}
-          />
-        </div>
+        </header>
 
-        <OrderSummary
+        <section className="mb-[18px] grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+          <article className="rounded-[28px] border border-slate-200 from-white to-sky-50 px-[22px] py-5 shadow-[0_24px_60px_rgba(32,76,112,0.12)]">
+            <span className="mb-2 block text-[0.82rem] text-slate-500">注文数</span>
+            <strong className="text-xl font-semibold text-slate-900">{orderCount}</strong>
+          </article>
+          <article className="rounded-[28px] border border-slate-200 from-white to-sky-50 px-[22px] py-5 shadow-[0_24px_60px_rgba(32,76,112,0.12)]">
+            <span className="mb-2 block text-[0.82rem] text-slate-500">合計</span>
+            <strong className="text-xl font-semibold text-slate-900">{formatPrice(total)}</strong>
+          </article>
+        </section>
+
+        {errorMessage ? (
+          <p className="mt-4 rounded-[18px] bg-rose-100 px-[18px] py-[14px] text-[0.95rem] text-rose-700">{errorMessage}</p>
+        ) : null}
+        {flashMessage ? (
+          <p className="mt-4 rounded-[18px] bg-emerald-100 px-[18px] py-[14px] text-[0.95rem] text-emerald-700">{flashMessage}</p>
+        ) : null}
+        {isOrderClosed ? (
+          <p className="mt-4 rounded-[18px] bg-slate-100 px-[18px] py-[14px] text-[0.95rem] text-slate-600">
+            この注文セッションは会計済みです。新しい注文は追加できません。
+          </p>
+        ) : null}
+
+        <section className="mt-[18px] grid grid-cols-[minmax(0,1.55fr)_minmax(300px,0.82fr)] gap-[18px] max-[900px]:grid-cols-1">
+          <div className="min-w-0 rounded-[28px] border border-slate-200 bg-white/90 p-[22px] shadow-[0_24px_60px_rgba(32,76,112,0.12)]">
+            <div className="mb-[18px]">
+              <p className="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-sky-700">Category</p>
+              <h2 className="mt-1.5 text-2xl font-semibold text-slate-900">カテゴリから選ぶ</h2>
+            </div>
+            <CategoryTabs
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onChange={handleCategoryChange}
+            />
+            <ProductGrid
+              baseUrl={assetBaseUrl}
+              loading={isProductsLoading}
+              products={products}
+              disabled={isOrderClosed}
+              onSelectProduct={setSelectedProduct}
+            />
+          </div>
+
+          <OrderSummary
+            orders={orders}
+            total={total}
+            baseUrl={assetBaseUrl}
+            disabled={isOrderClosed || orders.length === 0}
+            loading={isBilling}
+            onBill={() => setIsCheckoutOpen(true)}
+          />
+        </section>
+
+        <CheckoutModal
+          open={isCheckoutOpen}
           orders={orders}
           total={total}
-          baseUrl={assetBaseUrl}
-          disabled={isOrderClosed || orders.length === 0}
           loading={isBilling}
-          onBill={() => setIsCheckoutOpen(true)}
+          baseUrl={assetBaseUrl}
+          onClose={() => setIsCheckoutOpen(false)}
+          onConfirm={async () => {
+            const succeeded = await handleBill();
+            if (succeeded) {
+              setIsCheckoutOpen(false);
+            }
+          }}
         />
-      </section>
 
-      <CheckoutModal
-        open={isCheckoutOpen}
-        orders={orders}
-        total={total}
-        loading={isBilling}
-        baseUrl={assetBaseUrl}
-        onClose={() => setIsCheckoutOpen(false)}
-        onConfirm={async () => {
-          const succeeded = await handleBill();
-          if (succeeded) {
-            setIsCheckoutOpen(false);
-          }
-        }}
-      />
-
-      <ProductModal
-        baseUrl={assetBaseUrl}
-        product={selectedProduct}
-        loading={isSubmittingOrder}
-        disabled={isOrderClosed}
-        onClose={() => setSelectedProduct(null)}
-        onConfirm={handleAddOrder}
-      />
+        <ProductModal
+          baseUrl={assetBaseUrl}
+          product={selectedProduct}
+          loading={isSubmittingOrder}
+          disabled={isOrderClosed}
+          onClose={() => setSelectedProduct(null)}
+          onConfirm={handleAddOrder}
+        />
+      </div>
     </main>
   );
 }
