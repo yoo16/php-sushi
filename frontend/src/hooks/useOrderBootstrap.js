@@ -1,54 +1,15 @@
 import { useEffect } from 'react';
-import { fetchCategories, fetchOrders, fetchSeats, fetchVisit } from '../services/api';
-import { clearStoredOrderSession, persistOrderSession, persistSelectedSeat } from '../utils/orderSessionStorage';
+import { fetchOrders, fetchVisit } from '../services/api';
+import { clearStoredOrderSession } from '../utils/orderSessionStorage';
 
-export default function useOrderBootstrap({
-  apiBaseUrl,
-  restoredSession,
-  selectedSeatId,
-  setCategories,
-  setSeats,
-  setSelectedSeatId,
-  setSelectedSeatNumber,
-  setVisitId,
-  setVisitStatus,
-  setOrders,
-  setTotal,
-  setScreen,
-  setCompletedTotal,
-  setErrorMessage,
-  setIsBooting,
-  visitId,
-  screen,
-  completedTotal,
-}) {
+export default function useOrderBootstrap({ apiBaseUrl, session, setErrorMessage }) {
+  const { restoredSession, setVisitId, setVisitStatus, setOrders, setTotal, setScreen, setCompletedTotal, setIsBooting } = session;
+
   useEffect(() => {
     let ignore = false;
 
     async function bootstrap() {
       try {
-        const [categoriesResponse, seatsResponse] = await Promise.all([
-          fetchCategories(apiBaseUrl),
-          fetchSeats(apiBaseUrl),
-        ]);
-
-        if (ignore) {
-          return;
-        }
-
-        setCategories(categoriesResponse.categories ?? []);
-        const nextSeats = seatsResponse.seats ?? [];
-        setSeats(nextSeats);
-
-        const matchedSeat = nextSeats.find((seat) => Number(seat.id) === Number(selectedSeatId));
-        if (matchedSeat) {
-          setSelectedSeatNumber(matchedSeat.number);
-        } else if (nextSeats.length === 1) {
-          setSelectedSeatId(Number(nextSeats[0].id));
-          setSelectedSeatNumber(nextSeats[0].number);
-          persistSelectedSeat(nextSeats[0].id, nextSeats[0].number);
-        }
-
         if (restoredSession.visitId > 0) {
           const visitResponse = await fetchVisit(apiBaseUrl, restoredSession.visitId);
           const restoredVisit = visitResponse.visit;
@@ -95,26 +56,13 @@ export default function useOrderBootstrap({
     apiBaseUrl,
     restoredSession.completedTotal,
     restoredSession.visitId,
-    selectedSeatId,
-    setCategories,
     setCompletedTotal,
     setErrorMessage,
     setIsBooting,
     setOrders,
     setScreen,
-    setSeats,
-    setSelectedSeatId,
-    setSelectedSeatNumber,
     setTotal,
     setVisitId,
     setVisitStatus,
   ]);
-
-  useEffect(() => {
-    persistOrderSession({
-      visitId,
-      screen,
-      completedTotal,
-    });
-  }, [completedTotal, screen, visitId]);
 }

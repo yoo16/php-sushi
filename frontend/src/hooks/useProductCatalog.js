@@ -1,15 +1,38 @@
 import { startTransition, useEffect } from 'react';
-import { fetchProducts } from '../services/api';
+import { useState } from 'react';
+import { fetchCategories, fetchProducts } from '../services/api';
 
-export default function useProductCatalog({
-  apiBaseUrl,
-  screen,
-  selectedCategory,
-  setProducts,
-  setIsProductsLoading,
-  setErrorMessage,
-  setSelectedCategory,
-}) {
+const ALL_CATEGORY_ID = 0;
+
+export default function useProductCatalog({ apiBaseUrl, screen, setErrorMessage }) {
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORY_ID);
+  const [isProductsLoading, setIsProductsLoading] = useState(false);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadCategories() {
+      try {
+        const categoriesResponse = await fetchCategories(apiBaseUrl);
+        if (!ignore) {
+          setCategories(categoriesResponse.categories ?? []);
+        }
+      } catch (error) {
+        if (!ignore) {
+          setErrorMessage(error.message);
+        }
+      }
+    }
+
+    loadCategories();
+
+    return () => {
+      ignore = true;
+    };
+  }, [apiBaseUrl, setErrorMessage]);
+
   useEffect(() => {
     let ignore = false;
 
@@ -50,7 +73,16 @@ export default function useProductCatalog({
     });
   }
 
+  function resetCatalogState() {
+    setSelectedCategory(ALL_CATEGORY_ID);
+  }
+
   return {
+    categories,
+    products,
+    selectedCategory,
+    isProductsLoading,
     handleCategoryChange,
+    resetCatalogState,
   };
 }

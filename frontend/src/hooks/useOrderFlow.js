@@ -1,49 +1,27 @@
 import { addOrder, billVisit, fetchOrders, fetchVisit, joinVisit } from '../services/api';
 import { ensureVisitSession, playThanksVoice } from '../utils/orderSession';
 
-const ALL_CATEGORY_ID = 0;
-
-export default function useOrderFlow({
-  apiBaseUrl,
-  seatId,
-  visitId,
-  total,
-  selectedProduct,
-  setVisitId,
-  setVisitStatus,
-  setOrders,
-  setTotal,
-  setSelectedCategory,
-  setScreen,
-  setCompletedTotal,
-  setErrorMessage,
-  setFlashMessage,
-  setIsStartingOrder,
-  setIsSubmittingOrder,
-  setIsBilling,
-  setIsCheckoutOpen,
-  setSelectedProduct,
-}) {
-  async function refreshOrders(nextVisitId = visitId) {
+export default function useOrderFlow({ apiBaseUrl, seat, menu, session, messages }) {
+  async function refreshOrders(nextVisitId = session.visitId) {
     if (Number(nextVisitId) <= 0) {
-      setOrders([]);
-      setTotal(0);
+      session.setOrders([]);
+      session.setTotal(0);
       return;
     }
 
     const ordersResponse = await fetchOrders(apiBaseUrl, nextVisitId);
-    setOrders(ordersResponse.orders ?? []);
-    setTotal(ordersResponse.total ?? 0);
+    session.setOrders(ordersResponse.orders ?? []);
+    session.setTotal(ordersResponse.total ?? 0);
   }
 
   async function handleStartOrder() {
-    setIsStartingOrder(true);
-    setErrorMessage('');
-    setFlashMessage('');
-    setCompletedTotal(0);
+    session.setIsStartingOrder(true);
+    messages.setErrorMessage('');
+    messages.setFlashMessage('');
+    session.setCompletedTotal(0);
 
     try {
-      const resolvedVisit = await ensureVisitSession(apiBaseUrl, seatId, visitId, {
+      const resolvedVisit = await ensureVisitSession(apiBaseUrl, seat.seatId, session.visitId, {
         fetchVisit,
         joinVisit,
       });
@@ -52,82 +30,81 @@ export default function useOrderFlow({
       }
 
       const ordersResponse = await fetchOrders(apiBaseUrl, resolvedVisit.id);
-      setVisitId(Number(resolvedVisit.id));
-      setVisitStatus(resolvedVisit.status ?? 'seated');
-      setOrders(ordersResponse.orders ?? []);
-      setTotal(ordersResponse.total ?? 0);
-      setSelectedCategory(ALL_CATEGORY_ID);
-      setScreen('ordering');
-      setCompletedTotal(0);
+      session.setVisitId(Number(resolvedVisit.id));
+      session.setVisitStatus(resolvedVisit.status ?? 'seated');
+      session.setOrders(ordersResponse.orders ?? []);
+      session.setTotal(ordersResponse.total ?? 0);
+      menu.resetCatalogState();
+      session.setScreen('ordering');
+      session.setCompletedTotal(0);
     } catch (error) {
-      setErrorMessage(error.message);
+      messages.setErrorMessage(error.message);
     } finally {
-      setIsStartingOrder(false);
+      session.setIsStartingOrder(false);
     }
   }
 
-  async function handleAddOrder(quantity) {
-    if (!selectedProduct) {
+  async function handleAddOrder(product, quantity) {
+    if (!product) {
       return;
     }
 
-    setIsSubmittingOrder(true);
-    setErrorMessage('');
+    session.setIsSubmittingOrder(true);
+    messages.setErrorMessage('');
 
     try {
       await addOrder(apiBaseUrl, {
-        product_id: Number(selectedProduct.id),
-        product_name: selectedProduct.name,
-        product_image_path: selectedProduct.image_path,
+        product_id: Number(product.id),
+        product_name: product.name,
+        product_image_path: product.image_path,
         quantity,
-        visit_id: visitId,
+        visit_id: session.visitId,
       });
-      await refreshOrders();
+      await refreshOrders(session.visitId);
       playThanksVoice();
-      setFlashMessage(`${selectedProduct.name} を ${quantity} 皿追加しました。`);
-      setSelectedProduct(null);
+      messages.setFlashMessage(`${product.name} を ${quantity} 皿追加しました。`);
+      return true;
     } catch (error) {
-      setErrorMessage(error.message);
+      messages.setErrorMessage(error.message);
+      return false;
     } finally {
-      setIsSubmittingOrder(false);
+      session.setIsSubmittingOrder(false);
     }
   }
 
   async function handleBill() {
-    setIsBilling(true);
-    setErrorMessage('');
+    session.setIsBilling(true);
+    messages.setErrorMessage('');
 
     try {
-      const response = await billVisit(apiBaseUrl, visitId);
-      const billedTotal = Number(response.total ?? total ?? 0);
-      setCompletedTotal(billedTotal);
-      setFlashMessage('');
+      const response = await billVisit(apiBaseUrl, session.visitId);
+      const billedTotal = Number(response.total ?? session.total ?? 0);
+      session.setCompletedTotal(billedTotal);
+      messages.setFlashMessage('');
       transitionToCompleteScreen();
       return true;
     } catch (error) {
-      setErrorMessage(error.message);
+      messages.setErrorMessage(error.message);
       return false;
     } finally {
-      setIsBilling(false);
+      session.setIsBilling(false);
     }
   }
 
   function transitionToCompleteScreen() {
-    setVisitId(0);
-    setVisitStatus('seated');
-    setOrders([]);
-    setTotal(0);
-    setSelectedProduct(null);
-    setSelectedCategory(ALL_CATEGORY_ID);
-    setIsCheckoutOpen(false);
-    setScreen('complete');
+    session.setVisitId(0);
+    session.setVisitStatus('seated');
+    session.setOrders([]);
+    session.setTotal(0);
+    menu.resetCatalogState();
+    session.setScreen('complete');
   }
 
   function returnToTopScreen() {
-    setCompletedTotal(0);
-    setFlashMessage('');
-    setErrorMessage('');
-    setScreen('start');
+    session.setCompletedTotal(0);
+    messages.setFlashMessage('');
+    messages.setErrorMessage('');
+    session.setScreen('start');
   }
 
   return {
