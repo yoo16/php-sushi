@@ -49,6 +49,7 @@ require_once APP_DIR . 'controllers/admin/CategoryController.php';
 require_once APP_DIR . 'controllers/admin/ProductController.php';
 require_once APP_DIR . 'controllers/admin/VisitController.php';
 require_once APP_DIR . 'controllers/admin/SeatController.php';
+require_once APP_DIR . 'controllers/admin/DatabaseSetupController.php';
 
 if (!defined('BASE_URL')) define('BASE_URL', getBaseUrl());
 

@@ -35,6 +35,10 @@ export function fetchVisit(baseUrl, visitId) {
   return requestJson(url);
 }
 
+export function fetchSeats(baseUrl) {
+  return requestJson(buildApiUrl(baseUrl, 'seat/fetch.php'));
+}
+
 export function joinVisit(baseUrl, seatId) {
   return requestJson(buildApiUrl(baseUrl, 'visit/join.php'), {
     method: 'POST',

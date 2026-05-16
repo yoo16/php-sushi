@@ -32,6 +32,7 @@ class Order
                         orders.product_id,
                         orders.quantity,
                         orders.price,
+                        orders.created_at,
                         products.name AS product_name,
                         products.image_path AS product_image_path
                     FROM orders 
@@ -45,6 +46,36 @@ class Order
             return null;
         }
     }   
+
+    /**
+     * 注文履歴の一覧を取得
+     *
+     * @return array
+     */
+    public function fetchHistory()
+    {
+        try {
+            $sql = "SELECT
+                        orders.id,
+                        orders.visit_id,
+                        orders.product_id,
+                        orders.quantity,
+                        orders.price,
+                        orders.created_at,
+                        visits.seat_id,
+                        visits.status AS visit_status,
+                        products.name AS product_name
+                    FROM orders
+                    JOIN visits ON orders.visit_id = visits.id
+                    JOIN products ON orders.product_id = products.id
+                    ORDER BY orders.created_at DESC";
+            $stmt = $this->pdo->query($sql);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
 
     /**
      * 注文を追加

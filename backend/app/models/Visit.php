@@ -35,6 +35,25 @@ class Visit
     }
 
     /**
+     * 会計済み・支払い済みの履歴を取得
+     *
+     * @return array
+     */
+    public function fetchCheckoutHistory()
+    {
+        try {
+            $sql = "SELECT * FROM visits
+                    WHERE status IN ('billed', 'paid')
+                    ORDER BY updated_at DESC";
+            $stmt = $this->pdo->query($sql);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
+
+    /**
      * 指定されたIDの来店セッションを取得
      * @param int $id
      * @return array|null
@@ -102,8 +121,9 @@ class Visit
     public function billed($visitId, $total)
     {
         try {
-            // 税込み価格を計算
-            $total_with_tax = (int)($total * TAX_RATE);
+            $total = (int) $total;
+            $tax = (int) round($total * TAX_RATE);
+            $total_with_tax = $total + $tax;
 
             $sql = "UPDATE visits 
                 SET status = 'billed', total = :total, total_with_tax = :total_with_tax 

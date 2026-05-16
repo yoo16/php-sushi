@@ -21,7 +21,6 @@ export default function ProductModal({ baseUrl, disabled, loading, onClose, onCo
         onClick={(event) => event.stopPropagation()}
       >
         <div>
-          <p className="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-sky-700">Selected Item</p>
           <h2 id="product-modal-title" className="mt-1.5 text-2xl font-semibold text-slate-900">{product.name}</h2>
         </div>
 
