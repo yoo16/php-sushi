@@ -1,4 +1,4 @@
-export default function CheckoutCompleteScreen({ seatNumber, topPageUrl, total }) {
+export default function CheckoutCompleteScreen({ onBackToTop, seatNumber, total }) {
   return (
     <main className="min-h-screen font-sans text-slate-900">
       <div className="mx-auto flex min-h-screen w-[min(1240px,calc(100%-24px))] items-center justify-center py-6 pb-10 max-sm:w-[min(100%,calc(100%-16px))] max-sm:py-4 max-sm:pb-7">
@@ -11,12 +11,13 @@ export default function CheckoutCompleteScreen({ seatNumber, topPageUrl, total }
             <p className="mt-2 text-3xl font-semibold text-slate-900">{formatPrice(total)}</p>
           </div>
 
-          <a
-            href={topPageUrl}
+          <button
+            type="button"
             className="mt-8 inline-flex rounded-2xl bg-sky-600 px-8 py-4 text-lg font-medium text-white transition duration-150 hover:-translate-y-0.5 hover:bg-sky-700"
+            onClick={onBackToTop}
           >
             トップページへ戻る
-          </a>
+          </button>
         </section>
       </div>
     </main>
