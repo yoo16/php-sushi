@@ -13,7 +13,7 @@ export default function StartScreen({ onSeatChange, onStart, seatId, seats }) {
 
           <div className="mt-2 rounded-[28px] px-6 py-5">
             <p className="text-slate-500">
-              ご注文は下のボタンからどうぞ！
+              座席を選択して、注文を開始してください。
             </p>
           </div>
 
