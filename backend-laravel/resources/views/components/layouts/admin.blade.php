@@ -209,6 +209,30 @@
             background: var(--danger-bg);
             color: var(--danger);
         }
+        .flash-success {
+            margin-bottom: 18px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(5, 150, 105, .18);
+            background: #ecfdf5;
+            color: #047857;
+        }
+        .flash-warn {
+            margin-bottom: 18px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(217, 119, 6, .18);
+            background: #fffbeb;
+            color: #92400e;
+        }
+        .flash-title {
+            margin: 0 0 6px;
+            font-weight: 700;
+        }
+        .flash-body {
+            margin: 0;
+            white-space: pre-line;
+        }
         .actions {
             display: flex;
             gap: 12px;
@@ -302,6 +326,42 @@
             margin: 8px 0 0;
             font-weight: 600;
         }
+        .sql-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .sql-panel {
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: #fff;
+        }
+        .sql-header {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--line);
+            background: var(--surface-2);
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .sql-body {
+            margin: 0;
+            max-height: 420px;
+            overflow: auto;
+            padding: 16px;
+            background: #0f172a;
+            color: #bfdbfe;
+            font-size: 12px;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .sql-body-warn {
+            color: #fde68a;
+        }
+        .sql-body-ok {
+            color: #a7f3d0;
+        }
         .section-line {
             margin-top: 28px;
             padding-top: 24px;
@@ -313,7 +373,8 @@
             .actions > * { width: 100%; }
             .button, button { width: 100%; }
             .cards.cols-4,
-            .detail-grid {
+            .detail-grid,
+            .sql-grid {
                 grid-template-columns: 1fr;
             }
         }

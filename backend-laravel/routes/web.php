@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DatabaseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SeatController;
@@ -46,6 +47,8 @@ Route::prefix('admin/visit')->group(function (): void {
     Route::get('/', [VisitController::class, 'index']);
     Route::get('show.php', [VisitController::class, 'show']);
 });
+
+Route::match(['get', 'post'], '/admin/database/', [DatabaseController::class, 'index']);
 
 Route::middleware('api')->prefix('api')->group(function (): void {
     Route::get('category/fetch.php', [ApiCategoryController::class, 'index']);
