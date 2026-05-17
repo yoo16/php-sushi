@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppConfig } from '../context/AppConfigContext';
 import { buildAssetUrl } from '../utils/assetUrl';
-import LoadingButton from './LoadingButton';
 
 export default function ProductModal({ disabled, onClose, onConfirm, product }) {
   const { assetBaseUrl = '/' } = useAppConfig();
@@ -76,13 +75,14 @@ export default function ProductModal({ disabled, onClose, onConfirm, product }) 
           >
             閉じる
           </button>
-          <LoadingButton
+          <button
+            type="button"
             className="rounded-2xl bg-sky-600 px-[18px] py-[14px] font-medium text-white transition duration-150 enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
             disabled={disabled}
             onClick={() => onConfirm(quantity)}
           >
             注文
-          </LoadingButton>
+          </button>
         </div>
       </div>
     </div>

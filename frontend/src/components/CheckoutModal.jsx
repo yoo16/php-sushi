@@ -1,5 +1,4 @@
 import OrderItemList from './OrderItemList';
-import LoadingButton from './LoadingButton';
 
 export default function CheckoutModal({ onClose, onConfirm, open, orders, total }) {
   if (!open) {
@@ -36,12 +35,13 @@ export default function CheckoutModal({ onClose, onConfirm, open, orders, total 
           >
             戻る
           </button>
-          <LoadingButton
+          <button
+            type="button"
             className="rounded-2xl bg-sky-600 px-[18px] py-[14px] font-medium text-white transition duration-150 enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
             onClick={onConfirm}
           >
             会計を確定する
-          </LoadingButton>
+          </button>
         </div>
       </div>
     </div>

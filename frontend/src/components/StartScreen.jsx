@@ -1,4 +1,3 @@
-import LoadingButton from './LoadingButton';
 import SeatSelect from './SeatSelect';
 
 export default function StartScreen({ onSeatChange, onStart, seatId, seats }) {
@@ -18,13 +17,14 @@ export default function StartScreen({ onSeatChange, onStart, seatId, seats }) {
             </p>
           </div>
 
-          <LoadingButton
+          <button
+            type="button"
             className="mt-8 rounded-2xl bg-black px-8 py-4 text-lg font-medium text-white transition duration-150 enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
             disabled={Number(seatId) <= 0}
             onClick={onStart}
           >
             注文を開始する
-          </LoadingButton>
+          </button>
         </section>
       </div>
     </main>

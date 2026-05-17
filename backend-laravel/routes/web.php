@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SeatController;
 use App\Http\Controllers\Admin\VisitController;
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/admin/', [DashboardController::class, 'index']);
 
 Route::prefix('admin/category')->group(function (): void {
     Route::get('/', [CategoryController::class, 'index']);

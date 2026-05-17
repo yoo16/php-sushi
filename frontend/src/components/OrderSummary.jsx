@@ -1,5 +1,4 @@
 import OrderItemList from './OrderItemList';
-import LoadingButton from './LoadingButton';
 
 export default function OrderSummary({ disabled, onBill, orders, total }) {
   return (
@@ -10,13 +9,14 @@ export default function OrderSummary({ disabled, onBill, orders, total }) {
 
       <OrderItemList orders={orders} />
 
-      <LoadingButton
+      <button
+        type="button"
         className="mt-auto rounded-2xl bg-sky-600 px-[18px] py-[14px] font-medium text-white transition duration-150 enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
         disabled={disabled}
         onClick={onBill}
       >
         お会計へ進む
-      </LoadingButton>
+      </button>
     </aside>
   );
 }
