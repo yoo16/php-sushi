@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { findSeatById } from '../domain/seat';
-import { loadSeats } from '../services/seatService';
+import { findSeatById, loadSeats } from '../services/seatService';
 import { getInitialSeatId, getInitialSeatNumber, persistSelectedSeat } from '../utils/orderSessionStorage';
 
 export default function useSeatSelection({ config, setErrorMessage }) {
