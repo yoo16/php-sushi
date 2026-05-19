@@ -45,26 +45,19 @@ class ProductController extends Controller
 
         Product::query()->create($data);
 
-        return redirect('/admin/product/');
+        return redirect()->route('admin.product.index');
     }
 
-    public function edit(): View|RedirectResponse
+    public function edit(Product $product): View
     {
-        $product = Product::query()->find(request()->integer('id'));
-
-        if ($product === null) {
-            return redirect('/admin/product/');
-        }
-
         return view('admin.product.edit', [
             'product' => $product,
             'categories' => Category::query()->orderBy('sort_order')->orderBy('id')->get(),
         ]);
     }
 
-    public function update(UpdateProductRequest $request): RedirectResponse
+    public function update(UpdateProductRequest $request, Product $product): RedirectResponse
     {
-        $product = Product::query()->findOrFail($request->integer('id'));
         $data = $request->safe()->only(['name', 'category_id', 'price']);
 
         $newImagePath = $this->storeImage($request->file('image'));
@@ -74,18 +67,14 @@ class ProductController extends Controller
 
         $product->update($data);
 
-        return redirect('/admin/product/');
+        return redirect()->route('admin.product.index');
     }
 
-    public function destroy(): RedirectResponse
+    public function destroy(Product $product): RedirectResponse
     {
-        $productId = request()->integer('id');
+        $product->delete();
 
-        if ($productId > 0) {
-            Product::query()->whereKey($productId)->delete();
-        }
-
-        return redirect('/admin/product/');
+        return redirect()->route('admin.product.index');
     }
 
     private function storeImage(?UploadedFile $file): ?string

@@ -35,7 +35,7 @@ class AdminProductTest extends TestCase
             'category_id' => $category->id,
         ]);
 
-        $response = $this->get('/admin/product/');
+        $response = $this->get(route('admin.product.index'));
 
         $response
             ->assertOk()
@@ -62,7 +62,7 @@ class AdminProductTest extends TestCase
             'category_id' => $categoryB->id,
         ]);
 
-        $response = $this->get('/admin/product/?category_id='.$categoryA->id);
+        $response = $this->get(route('admin.product.index', ['category_id' => $categoryA->id]));
 
         $response
             ->assertOk()
@@ -74,14 +74,14 @@ class AdminProductTest extends TestCase
     {
         $category = Category::query()->create(['name' => 'まぐろ', 'sort_order' => 1]);
 
-        $response = $this->post('/admin/product/add.php', [
+        $response = $this->post(route('admin.product.store'), [
             'name' => '新規商品',
             'category_id' => $category->id,
             'price' => 320,
             'image' => UploadedFile::fake()->image('product.png'),
         ]);
 
-        $response->assertRedirect('/admin/product/');
+        $response->assertRedirect(route('admin.product.index'));
 
         $product = Product::query()->where('name', '新規商品')->first();
         $this->assertNotNull($product);
@@ -101,14 +101,13 @@ class AdminProductTest extends TestCase
             'category_id' => $categoryA->id,
         ]);
 
-        $response = $this->post('/admin/product/update.php', [
-            'id' => $product->id,
+        $response = $this->post(route('admin.product.update', $product), [
             'name' => '更新商品',
             'category_id' => $categoryB->id,
             'price' => 480,
         ]);
 
-        $response->assertRedirect('/admin/product/');
+        $response->assertRedirect(route('admin.product.index'));
 
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
@@ -129,11 +128,9 @@ class AdminProductTest extends TestCase
             'category_id' => $category->id,
         ]);
 
-        $response = $this->post('/admin/product/delete.php', [
-            'id' => $product->id,
-        ]);
+        $response = $this->post(route('admin.product.destroy', $product));
 
-        $response->assertRedirect('/admin/product/');
+        $response->assertRedirect(route('admin.product.index'));
         $this->assertDatabaseMissing('products', ['id' => $product->id]);
     }
 }

@@ -17,26 +17,19 @@ class SeatController extends Controller
         ]);
     }
 
-    public function edit(): View|RedirectResponse
+    public function edit(Seat $seat): View
     {
-        $seat = Seat::query()->find(request()->integer('id'));
-
-        if ($seat === null) {
-            return redirect('/admin/seat/');
-        }
-
         return view('admin.seat.edit', [
             'seat' => $seat,
         ]);
     }
 
-    public function update(UpdateSeatRequest $request): RedirectResponse
+    public function update(UpdateSeatRequest $request, Seat $seat): RedirectResponse
     {
-        $seat = Seat::query()->findOrFail($request->integer('id'));
         $seat->update([
             'number' => $request->integer('number'),
         ]);
 
-        return redirect('/admin/seat/');
+        return redirect()->route('admin.seat.index');
     }
 }

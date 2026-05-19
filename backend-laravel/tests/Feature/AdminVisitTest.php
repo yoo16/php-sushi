@@ -31,7 +31,7 @@ class AdminVisitTest extends TestCase
             'total_with_tax' => 660,
         ]);
 
-        $response = $this->get('/admin/visit/');
+        $response = $this->get(route('admin.visit.index'));
 
         $response
             ->assertOk()
@@ -64,7 +64,7 @@ class AdminVisitTest extends TestCase
             'price' => 150,
         ]);
 
-        $response = $this->get('/admin/visit/show.php?id='.$visit->id);
+        $response = $this->get(route('admin.visit.show', $visit));
 
         $response
             ->assertOk()
@@ -76,10 +76,7 @@ class AdminVisitTest extends TestCase
 
     public function test_show_page_displays_missing_visit_message(): void
     {
-        $response = $this->get('/admin/visit/show.php?id=999');
-
-        $response
-            ->assertOk()
-            ->assertSee('指定された訪問データが存在しません。');
+        $response = $this->get('/admin/visit/show/999');
+        $response->assertNotFound();
     }
 }

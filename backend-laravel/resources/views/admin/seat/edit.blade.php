@@ -4,16 +4,15 @@
             <h1 class="heading">座席編集</h1>
             <p class="subtle">座席番号を更新します。</p>
         </div>
-        <a href="/admin/seat/" class="button button-secondary">一覧に戻る</a>
+        <a href="{{ route('admin.seat.index') }}" class="button button-secondary">一覧に戻る</a>
     </div>
 
     @if ($errors->any())
         <div class="flash-errors">入力内容を確認してください。</div>
     @endif
 
-    <form action="/admin/seat/update.php" method="POST" class="stack">
+    <form action="{{ route('admin.seat.update', $seat) }}" method="POST" class="stack">
         @csrf
-        <input type="hidden" name="id" value="{{ old('id', $seat->id) }}">
 
         <div>
             <label for="number">座席番号</label>

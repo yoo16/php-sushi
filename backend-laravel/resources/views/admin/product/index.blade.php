@@ -4,14 +4,14 @@
             <h1 class="heading">商品一覧</h1>
             <p class="subtle">カテゴリ別の絞り込みと商品編集ができます。</p>
         </div>
-        <a href="/admin/product/create.php" class="button button-primary">+ 商品追加</a>
+        <a href="{{ route('admin.product.create') }}" class="button button-primary">+ 商品追加</a>
     </div>
 
     <div class="chips">
-        <a href="/admin/product/" class="chip {{ $selectedCategoryId === null ? 'active' : '' }}">すべて</a>
+        <a href="{{ route('admin.product.index') }}" class="chip {{ $selectedCategoryId === null ? 'active' : '' }}">すべて</a>
         @foreach ($categories as $category)
             <a
-                href="/admin/product/?category_id={{ $category->id }}"
+                href="{{ route('admin.product.index', ['category_id' => $category->id]) }}"
                 class="chip {{ $selectedCategoryId === $category->id ? 'active' : '' }}"
             >
                 {{ $category->name }}
@@ -34,7 +34,7 @@
                     @foreach ($products as $product)
                         <tr>
                             <td>
-                                <a href="/admin/product/edit.php?id={{ $product->id }}" style="color: var(--brand); font-weight: 600;">
+                                <a href="{{ route('admin.product.edit', $product) }}" style="color: var(--brand); font-weight: 600;">
                                     編集
                                 </a>
                             </td>

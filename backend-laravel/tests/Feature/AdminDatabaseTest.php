@@ -9,7 +9,7 @@ class AdminDatabaseTest extends TestCase
 {
     public function test_database_page_displays_legacy_sql_preview(): void
     {
-        $response = $this->get('/admin/database/');
+        $response = $this->get(route('admin.database'));
 
         $response
             ->assertOk()
@@ -31,7 +31,7 @@ class AdminDatabaseTest extends TestCase
             ->twice()
             ->andReturn('Migration completed');
 
-        $response = $this->post('/admin/database/');
+        $response = $this->post(route('admin.database'));
 
         $response
             ->assertOk()

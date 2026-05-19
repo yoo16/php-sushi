@@ -4,14 +4,14 @@
             <h1 class="heading">商品登録</h1>
             <p class="subtle">商品名、カテゴリ、価格、画像を登録します。</p>
         </div>
-        <a href="/admin/product/" class="button button-secondary">一覧に戻る</a>
+        <a href="{{ route('admin.product.index') }}" class="button button-secondary">一覧に戻る</a>
     </div>
 
     @if ($errors->any())
         <div class="flash-errors">入力内容を確認してください。</div>
     @endif
 
-    <form action="/admin/product/add.php" method="POST" enctype="multipart/form-data" class="stack">
+    <form action="{{ route('admin.product.store') }}" method="POST" enctype="multipart/form-data" class="stack">
         @csrf
         <div>
             <label for="name">商品名</label>

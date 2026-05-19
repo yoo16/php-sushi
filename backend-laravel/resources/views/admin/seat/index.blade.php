@@ -19,7 +19,7 @@
                     @foreach ($seats as $seat)
                         <tr>
                             <td>
-                                <a href="/admin/seat/edit.php?id={{ $seat->id }}" style="color: var(--brand); font-weight: 600;">
+                                <a href="{{ route('admin.seat.edit', $seat) }}" style="color: var(--brand); font-weight: 600;">
                                     編集
                                 </a>
                             </td>

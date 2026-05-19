@@ -4,7 +4,7 @@
             <h1 class="heading">カテゴリ登録</h1>
             <p class="subtle">表示順を含めて新しいカテゴリを追加します。</p>
         </div>
-        <a href="/admin/category/" class="button button-secondary">一覧に戻る</a>
+        <a href="{{ route('admin.category.index') }}" class="button button-secondary">一覧に戻る</a>
     </div>
 
     @if ($errors->any())
@@ -13,7 +13,7 @@
         </div>
     @endif
 
-    <form action="/admin/category/add.php" method="POST" class="stack">
+    <form action="{{ route('admin.category.store') }}" method="POST" class="stack">
         @csrf
         <div>
             <label for="name">カテゴリ名</label>

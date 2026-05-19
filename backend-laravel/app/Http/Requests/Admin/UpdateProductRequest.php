@@ -6,6 +6,15 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $product = $this->route('product');
+
+        $this->merge([
+            'id' => is_object($product) ? $product->id : $product,
+        ]);
+    }
+
     public function authorize(): bool
     {
         return true;

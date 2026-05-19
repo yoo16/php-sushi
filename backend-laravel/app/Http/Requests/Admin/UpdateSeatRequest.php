@@ -7,6 +7,15 @@ use Illuminate\Validation\Rule;
 
 class UpdateSeatRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $seat = $this->route('seat');
+
+        $this->merge([
+            'id' => is_object($seat) ? $seat->id : $seat,
+        ]);
+    }
+
     public function authorize(): bool
     {
         return true;

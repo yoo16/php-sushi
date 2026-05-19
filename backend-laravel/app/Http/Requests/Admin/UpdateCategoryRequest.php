@@ -7,6 +7,15 @@ use Illuminate\Validation\Rule;
 
 class UpdateCategoryRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $category = $this->route('category');
+
+        $this->merge([
+            'id' => is_object($category) ? $category->id : $category,
+        ]);
+    }
+
     public function authorize(): bool
     {
         return true;

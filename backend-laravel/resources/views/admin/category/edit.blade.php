@@ -4,7 +4,7 @@
             <h1 class="heading">カテゴリ編集</h1>
             <p class="subtle">カテゴリ名と表示順を更新します。</p>
         </div>
-        <a href="/admin/category/" class="button button-secondary">一覧に戻る</a>
+        <a href="{{ route('admin.category.index') }}" class="button button-secondary">一覧に戻る</a>
     </div>
 
     @if ($errors->any())
@@ -13,9 +13,8 @@
         </div>
     @endif
 
-    <form action="/admin/category/update.php" method="POST" class="stack">
+    <form action="{{ route('admin.category.update', $category) }}" method="POST" class="stack">
         @csrf
-        <input type="hidden" name="id" value="{{ old('id', $category->id) }}">
 
         <div>
             <label for="name">カテゴリ名</label>
@@ -52,9 +51,8 @@
     </form>
 
     <div class="section-line">
-        <form action="/admin/category/delete.php" method="POST" onsubmit="return confirm('本当に削除しますか？');">
+        <form action="{{ route('admin.category.destroy', $category) }}" method="POST" onsubmit="return confirm('本当に削除しますか？');">
             @csrf
-            <input type="hidden" name="id" value="{{ $category->id }}">
             <button type="submit" class="button button-danger">このカテゴリを削除する</button>
         </form>
     </div>

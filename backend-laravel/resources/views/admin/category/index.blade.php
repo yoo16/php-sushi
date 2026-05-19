@@ -4,7 +4,7 @@
             <h1 class="heading">カテゴリ一覧</h1>
             <p class="subtle">Laravel 管理画面のカテゴリ管理です。</p>
         </div>
-        <a href="/admin/category/create.php" class="button button-primary">+ カテゴリ追加</a>
+        <a href="{{ route('admin.category.create') }}" class="button button-primary">+ カテゴリ追加</a>
     </div>
 
     @if ($categories->isNotEmpty())
@@ -21,7 +21,7 @@
                     @foreach ($categories as $category)
                         <tr>
                             <td>
-                                <a href="/admin/category/edit.php?id={{ $category->id }}" style="color: var(--brand); font-weight: 600;">
+                                <a href="{{ route('admin.category.edit', $category) }}" style="color: var(--brand); font-weight: 600;">
                                     編集
                                 </a>
                             </td>

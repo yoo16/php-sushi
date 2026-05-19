@@ -14,7 +14,7 @@ class AdminSeatTest extends TestCase
     {
         Seat::query()->create(['number' => 1]);
 
-        $response = $this->get('/admin/seat/');
+        $response = $this->get(route('admin.seat.index'));
 
         $response
             ->assertOk()
@@ -26,7 +26,7 @@ class AdminSeatTest extends TestCase
     {
         $seat = Seat::query()->create(['number' => 8]);
 
-        $response = $this->get('/admin/seat/edit.php?id='.$seat->id);
+        $response = $this->get(route('admin.seat.edit', $seat));
 
         $response
             ->assertOk()
@@ -38,12 +38,11 @@ class AdminSeatTest extends TestCase
     {
         $seat = Seat::query()->create(['number' => 2]);
 
-        $response = $this->post('/admin/seat/update.php', [
-            'id' => $seat->id,
+        $response = $this->post(route('admin.seat.update', $seat), [
             'number' => 12,
         ]);
 
-        $response->assertRedirect('/admin/seat/');
+        $response->assertRedirect(route('admin.seat.index'));
 
         $this->assertDatabaseHas('seats', [
             'id' => $seat->id,

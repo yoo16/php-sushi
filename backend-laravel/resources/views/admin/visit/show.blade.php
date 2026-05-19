@@ -4,7 +4,7 @@
             <h1 class="heading">訪問詳細</h1>
             <p class="subtle">訪問単位の注文履歴と会計状態を確認します。</p>
         </div>
-        <a href="/admin/visit/" class="button button-secondary">訪問一覧へ戻る</a>
+        <a href="{{ route('admin.visit.index') }}" class="button button-secondary">訪問一覧へ戻る</a>
     </div>
 
     @if ($visit === null)

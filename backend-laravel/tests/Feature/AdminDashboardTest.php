@@ -73,7 +73,7 @@ class AdminDashboardTest extends TestCase
             'price' => 200,
         ]);
 
-        $response = $this->get('/admin/');
+        $response = $this->get(route('admin.dashboard'));
 
         $response
             ->assertOk()

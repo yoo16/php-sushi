@@ -4,16 +4,15 @@
             <h1 class="heading">商品編集</h1>
             <p class="subtle">価格やカテゴリを更新し、必要なら画像も差し替えます。</p>
         </div>
-        <a href="/admin/product/" class="button button-secondary">一覧に戻る</a>
+        <a href="{{ route('admin.product.index') }}" class="button button-secondary">一覧に戻る</a>
     </div>
 
     @if ($errors->any())
         <div class="flash-errors">入力内容を確認してください。</div>
     @endif
 
-    <form action="/admin/product/update.php" method="POST" enctype="multipart/form-data" class="stack">
+    <form action="{{ route('admin.product.update', $product) }}" method="POST" enctype="multipart/form-data" class="stack">
         @csrf
-        <input type="hidden" name="id" value="{{ old('id', $product->id) }}">
 
         <div>
             <label for="name">商品名</label>
@@ -66,9 +65,8 @@
     </form>
 
     <div class="section-line">
-        <form action="/admin/product/delete.php" method="POST" onsubmit="return confirm('本当に削除しますか？');">
+        <form action="{{ route('admin.product.destroy', $product) }}" method="POST" onsubmit="return confirm('本当に削除しますか？');">
             @csrf
-            <input type="hidden" name="id" value="{{ $product->id }}">
             <button type="submit" class="button button-danger">この商品を削除する</button>
         </form>
     </div>

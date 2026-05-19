@@ -28,7 +28,7 @@
                                 <td class="num">{{ number_format($visit->total_with_tax ?? 0) }}円</td>
                                 <td>{{ $visit->updated_at }}</td>
                                 <td>
-                                    <a href="/admin/visit/show.php?id={{ $visit->id }}" style="color: var(--brand); font-weight: 600;">
+                                    <a href="{{ route('admin.visit.show', $visit) }}" style="color: var(--brand); font-weight: 600;">
                                         詳細
                                     </a>
                                 </td>
@@ -64,7 +64,7 @@
                                 <td class="num">{{ number_format($history->total_with_tax ?? 0) }}円</td>
                                 <td>{{ $history->updated_at }}</td>
                                 <td>
-                                    <a href="/admin/visit/show.php?id={{ $history->id }}" style="color: var(--brand); font-weight: 600;">
+                                    <a href="{{ route('admin.visit.show', $history) }}" style="color: var(--brand); font-weight: 600;">
                                         詳細
                                     </a>
                                 </td>

@@ -21,7 +21,7 @@ class LegacyApiTest extends TestCase
             'sort_order' => 1,
         ]);
 
-        $response = $this->getJson('/api/category/fetch.php');
+        $response = $this->getJson('/api/category/fetch');
 
         $response
             ->assertOk()
@@ -49,7 +49,7 @@ class LegacyApiTest extends TestCase
             'category_id' => $categoryB->id,
         ]);
 
-        $response = $this->getJson('/api/product/fetch.php?category_id='.$categoryA->id);
+        $response = $this->getJson('/api/product/fetch?category_id='.$categoryA->id);
 
         $response
             ->assertOk()
@@ -66,7 +66,7 @@ class LegacyApiTest extends TestCase
             'status' => 'seated',
         ]);
 
-        $response = $this->postJson('/api/visit/join.php', [
+        $response = $this->postJson('/api/visit/join', [
             'seat_id' => $seat->id,
         ]);
 
@@ -93,7 +93,7 @@ class LegacyApiTest extends TestCase
             'status' => 'seated',
         ]);
 
-        $response = $this->postJson('/api/order/add.php', [
+        $response = $this->postJson('/api/order/add', [
             'product_id' => $product->id,
             'quantity' => 2,
             'visit_id' => $visit->id,
@@ -134,7 +134,7 @@ class LegacyApiTest extends TestCase
             'price' => 300,
         ]);
 
-        $response = $this->postJson('/api/order/billed.php', [
+        $response = $this->postJson('/api/order/billed', [
             'visit_id' => $visit->id,
         ]);
 

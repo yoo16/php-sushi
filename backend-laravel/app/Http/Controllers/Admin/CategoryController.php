@@ -29,38 +29,27 @@ class CategoryController extends Controller
     {
         Category::query()->create($request->validated());
 
-        return redirect('/admin/category/');
+        return redirect()->route('admin.category.index');
     }
 
-    public function edit(): View|RedirectResponse
+    public function edit(Category $category): View
     {
-        $category = Category::query()->find(request()->integer('id'));
-
-        if ($category === null) {
-            return redirect('/admin/category/');
-        }
-
         return view('admin.category.edit', [
             'category' => $category,
         ]);
     }
 
-    public function update(UpdateCategoryRequest $request): RedirectResponse
+    public function update(UpdateCategoryRequest $request, Category $category): RedirectResponse
     {
-        $category = Category::query()->findOrFail($request->integer('id'));
         $category->update($request->safe()->only(['name', 'sort_order']));
 
-        return redirect('/admin/category/');
+        return redirect()->route('admin.category.index');
     }
 
-    public function destroy(): RedirectResponse
+    public function destroy(Category $category): RedirectResponse
     {
-        $categoryId = request()->integer('id');
+        $category->delete();
 
-        if ($categoryId > 0) {
-            Category::query()->whereKey($categoryId)->delete();
-        }
-
-        return redirect('/admin/category/');
+        return redirect()->route('admin.category.index');
     }
 }

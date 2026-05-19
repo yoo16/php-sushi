@@ -32,17 +32,8 @@ class VisitController extends Controller
         ]);
     }
 
-    public function show(): View
+    public function show(Visit $visit): View
     {
-        $visit = Visit::query()->find(request()->integer('id'));
-
-        if ($visit === null) {
-            return view('admin.visit.show', [
-                'visit' => null,
-                'orders' => collect(),
-            ]);
-        }
-
         $orders = $this->orderService->fetchByVisitId($visit->id)->map(function ($order) {
             $order->line_total = (int) $order->price * (int) $order->quantity;
             return $order;
